@@ -142,7 +142,7 @@ export default function TrackTreeNode({
         onClick={handleClick}
       >
         <div className="flex flex-col gap-2">
-          <div className="absolute w-36 h-36 flex justify-center items-center"><div className="spinner"></div></div>
+          <div className="absolute w-36 h-36 flex justify-center items-center z-0"><div className="spinner"></div></div>
           <div
             className="w-36 h-36 bg-cover z-10"
             style={{
