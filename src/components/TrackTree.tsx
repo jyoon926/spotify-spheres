@@ -19,7 +19,7 @@ export default function TrackTree({ spotifyApi }: Props) {
           setInitializing(false);
         });
       } catch (error) {
-        console.error('Error fetching top tracks:', error);
+        console.error("Error fetching top tracks:", error);
       }
     };
 
@@ -30,8 +30,8 @@ export default function TrackTree({ spotifyApi }: Props) {
   }, [initializeTree, initializing, rootNode, spotifyApi]);
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center">
+    <>
       {rootNode && <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />}
-    </div>
+    </>
   );
 }

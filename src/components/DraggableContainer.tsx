@@ -194,12 +194,21 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
         }}
       >
         <div
-          className="relative"
+          className="relative w-screen h-screen flex justify-center items-center"
           style={{
             transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
             transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
         >
+          <div
+            className="absolute"
+            style={{
+              width: "1000%",
+              height: "1000%",
+              backgroundImage: `radial-gradient(circle, #d6d6d4 1px, transparent 1px)`,
+              backgroundSize: "25px 25px",
+            }}
+          />
           {children}
         </div>
 
