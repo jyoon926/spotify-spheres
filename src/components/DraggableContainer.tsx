@@ -177,47 +177,49 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
   const isAtDefault = position.x === 0 && position.y === 0 && zoom === 1;
 
   return (
-    <div
-      ref={containerRef}
-      className={`fixed inset-0 overflow-hidden relative flex justify-center items-center ${className}`}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleEnd}
-      style={{
-        cursor: isDragging ? "grabbing" : "grab",
-        touchAction: "none",
-      }}
-    >
+    <div className="fixed inset-0 overflow-hidden">
       <div
-        className="relative w-screen h-screen flex justify-center items-center"
+        ref={containerRef}
+        className={`relative w-full h-full flex justify-center items-center ${className}`}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleEnd}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
-          transition: isDragging ? "none" : "transform 0.3s ease-out",
+          cursor: isDragging ? "grabbing" : "grab",
+          touchAction: "none",
         }}
       >
         <div
-          className="absolute"
+          className="relative w-screen h-screen flex justify-center items-center"
           style={{
-            width: "1000%",
-            height: "1000%",
-            backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.2) 1px, transparent 1px)`,
-            backgroundSize: "25px 25px",
+            transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
+            transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
-        />
-        {children}
-      </div>
+        >
+          <div
+            className="absolute"
+            style={{
+              width: "1000%",
+              height: "1000%",
+              backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.2) 1px, transparent 1px)`,
+              backgroundSize: "25px 25px",
+            }}
+          />
+          {children}
+        </div>
 
-      <div
-        className={`fixed left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center duration-300 ${
-          showResetButton && !isAtDefault ? "top-3" : "-top-10"
-        }`}
-      >
-        <button onClick={resetPosition} className="button light sm transition-all duration-200 ease-in-out">
-          Reset view
-        </button>
+        <div
+          className={`fixed left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center duration-300 ${
+            showResetButton && !isAtDefault ? "top-3" : "-top-10"
+          }`}
+        >
+          <button onClick={resetPosition} className="button light sm transition-all duration-200 ease-in-out">
+            Reset view
+          </button>
+        </div>
       </div>
     </div>
   );
