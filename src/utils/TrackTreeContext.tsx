@@ -103,18 +103,22 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   const deleteNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
       if (node.parent) {
+        const uniqueChildren = [...new Set([...node.parent.children, ...node.children])];
         const updatedParent: TreeNode<SpotifyApi.TrackObjectFull> = {
           ...node.parent,
-          children: [...node.parent.children, ...node.children],
+          children: uniqueChildren,
         };
         updateNode(updatedParent);
       } else {
-        const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
-          ...node.children[0],
-          id: node.id,
-          children: node.children.slice(1) || [],
-        };
-        updateNode(newRoot);
+        if (node.children.length > 0) {
+          const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
+            ...node.children[0],
+            id: node.id,
+            children: node.children.slice(1),
+            parent: null
+          };
+          updateNode(newRoot);
+        }
       }
     },
     [updateNode]
