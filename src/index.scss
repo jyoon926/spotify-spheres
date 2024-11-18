@@ -94,6 +94,7 @@ input {
   padding: 0.6rem !important;
   outline: none !important;
   transition-duration: 300ms;
+  border-radius: 0;
 
   &:focus {
     border-color: rgb(var(--foreground));
