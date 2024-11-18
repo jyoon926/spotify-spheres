@@ -130,7 +130,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
         getTrackList,
         selectNode,
         deselectNode,
-        deleteNode
+        deleteNode,
       }}
     >
       {children}

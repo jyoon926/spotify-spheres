@@ -212,13 +212,15 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
           {children}
         </div>
 
-        {showResetButton && !isAtDefault && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center">
-            <button onClick={resetPosition} className="button light sm transition-all duration-200 ease-in-out">
-              Reset view
-            </button>
-          </div>
-        )}
+        <div
+          className={`fixed top-3 left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center duration-300 ${
+            !showResetButton || (isAtDefault && "-top-10")
+          }`}
+        >
+          <button onClick={resetPosition} className="button light sm transition-all duration-200 ease-in-out">
+            Reset view
+          </button>
+        </div>
       </div>
     </div>
   );

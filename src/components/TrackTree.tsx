@@ -29,9 +29,5 @@ export default function TrackTree({ spotifyApi }: Props) {
     }
   }, [initializeTree, initializing, rootNode, spotifyApi]);
 
-  return (
-    <>
-      {rootNode && <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />}
-    </>
-  );
+  return <>{rootNode && <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />}</>;
 }

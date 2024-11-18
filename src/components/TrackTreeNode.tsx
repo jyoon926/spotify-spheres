@@ -93,8 +93,8 @@ export default function TrackTreeNode({
         audio.play();
       }
     }
-    setIsPlaying(prev => !prev);
-  }
+    setIsPlaying((prev) => !prev);
+  };
 
   // Calculate child positions
   const childCount = node.children.length;
@@ -137,7 +137,7 @@ export default function TrackTreeNode({
           node.selected && "border-foreground"
         }`}
         style={{
-          transform: `translate(-50%, -50%)`
+          transform: `translate(-50%, -50%)`,
         }}
         onClick={handleClick}
       >

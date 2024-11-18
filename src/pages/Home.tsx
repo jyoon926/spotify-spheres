@@ -25,7 +25,9 @@ export default function Home() {
         <TrackTreePage spotifyApi={spotifyApi} />
       ) : (
         <div className="fixed inset-0 flex flex-col justify-center items-center gap-10 p-5">
-          <h1 className="max-w-[700px] text-center text-4xl sm:text-5xl md:text-6xl">Discover music and explore your taste like never before.</h1>
+          <h1 className="max-w-[700px] text-center text-4xl sm:text-5xl md:text-6xl">
+            Discover music and explore your taste like never before.
+          </h1>
           <button className="button text-lg" onClick={login}>
             Start exploring
           </button>

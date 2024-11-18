@@ -11,7 +11,7 @@ export default {
         glass: "rgba(var(--background), 0.5)",
       },
       borderColor: {
-        DEFAULT: 'rgba(var(--foreground), 0.2)',
+        DEFAULT: "rgba(var(--foreground), 0.2)",
       },
     },
   },
