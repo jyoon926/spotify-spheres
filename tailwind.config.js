@@ -9,7 +9,7 @@ export default {
         lighter: "rgba(var(--foreground), 0.1)",
         light: "rgba(var(--foreground), 0.2)",
         medium: "rgba(var(--foreground), 0.3)",
-        glass: "rgba(var(--background), 0.5)",
+        glass: "rgba(var(--background), 0.6)",
       },
       borderColor: {
         DEFAULT: "rgba(var(--foreground), 0.2)",

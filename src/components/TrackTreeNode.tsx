@@ -103,7 +103,7 @@ export default function TrackTreeNode({
 
   return (
     <div
-      className="absolute"
+      className="absolute hover:z-10"
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
         transition: "transform 0.5s ease-out",
@@ -166,9 +166,9 @@ export default function TrackTreeNode({
           <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleReload}>
             <MdRefresh />
           </button>
-          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDelete}>
+          {/* <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDelete}>
             <IoMdTrash />
-          </button>
+          </button> */}
         </div>
       </div>
 

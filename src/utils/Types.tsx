@@ -15,6 +15,7 @@ export interface TrackTreeContextType {
   ) => void;
   initializeTree: (track: SpotifyApi.TrackObjectFull) => void;
   getTrackList: () => SpotifyApi.TrackObjectFull[];
+  getTracks: () => SpotifyApi.TrackObjectFull[];
   selectNode: (node: TreeNode<SpotifyApi.TrackObjectFull>) => void;
   deselectNode: (node: TreeNode<SpotifyApi.TrackObjectFull>) => void;
   deleteNode: (node: TreeNode<SpotifyApi.TrackObjectFull>) => void;
