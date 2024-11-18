@@ -35,8 +35,8 @@ export default function TrackList({ spotifyApi }: Props) {
           trackList.length === 0 && "translate-y-20"
         }`}
       >
-        <div className="w-80 flex flex-row justify-between items-center">
-          <button className="flex flex-row items-center" onClick={handleCollapse}>
+        <div className="w-80 flex flex-row justify-between items-center gap-3">
+          <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
             <MdArrowDropDown className={`text-2xl ${collapsed && "-rotate-90"}`} />
             <div className="font-bold">Track List ({trackList.length})</div>
           </button>

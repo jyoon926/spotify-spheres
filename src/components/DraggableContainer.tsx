@@ -213,8 +213,8 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
         </div>
 
         <div
-          className={`fixed top-3 left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center duration-300 ${
-            !showResetButton || (isAtDefault && "-top-10")
+          className={`fixed left-1/2 -translate-x-1/2 flex flex-col gap-2 items-center duration-300 ${
+            showResetButton && !isAtDefault ? "top-3" : "-top-10"
           }`}
         >
           <button onClick={resetPosition} className="button light sm transition-all duration-200 ease-in-out">
