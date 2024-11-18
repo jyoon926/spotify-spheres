@@ -5,23 +5,25 @@ import { TrackTreeContextType, TreeNode } from "./Types";
 const TrackTreeContext = createContext<TrackTreeContextType | undefined>(undefined);
 
 export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
-  const [rootNode, setRootNode] = useState<TreeNode<SpotifyApi.TrackObjectFull>>();
+  const [rootNode, setRootNode] = useState<TreeNode<SpotifyApi.TrackObjectFull> | null>(null);
 
-  const generateId = (): string => {
-    const n = Math.random().toString(36).slice(2);
-    return n;
-  };
-
-  const initializeTree = useCallback((track: SpotifyApi.TrackObjectFull) => {
-    const newRootNode: TreeNode<SpotifyApi.TrackObjectFull> = {
-      id: generateId(),
-      value: track,
-      children: [],
-      parent: null,
-      selected: false,
-    };
-    setRootNode(newRootNode);
+  const generateId = useCallback((): string => {
+    return Math.random().toString(36).slice(2);
   }, []);
+
+  const initializeTree = useCallback(
+    (track: SpotifyApi.TrackObjectFull) => {
+      const newRootNode: TreeNode<SpotifyApi.TrackObjectFull> = {
+        id: generateId(),
+        value: track,
+        children: [],
+        parent: null,
+        selected: false,
+      };
+      setRootNode(newRootNode);
+    },
+    [generateId]
+  );
 
   const updateNode = useCallback(
     (nodeToUpdate: TreeNode<SpotifyApi.TrackObjectFull>) => {
@@ -38,7 +40,6 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
           children: current.children.map((child) => updateNodeRecursive(child)),
         };
       };
-
       setRootNode(updateNodeRecursive(rootNode));
     },
     [rootNode]
@@ -62,30 +63,32 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
       updateNode(updatedParentNode);
     },
-    [updateNode]
+    [generateId, updateNode]
   );
 
   const getTrackList = useCallback(() => {
-    let queue = [rootNode];
+    if (!rootNode) return [];
     const tracks: SpotifyApi.TrackObjectFull[] = [];
+    let queue = [rootNode];
     while (queue.length > 0) {
-      const curr = queue.pop();
+      const curr = queue.shift();
       if (curr && curr.selected) {
         tracks.push(curr.value);
-        queue = [...queue, ...curr.children];
+        queue.push(...curr.children);
       }
     }
     return tracks;
   }, [rootNode]);
 
   const getTracks = useCallback(() => {
-    let queue = [rootNode];
+    if (!rootNode) return [];
     const tracks: SpotifyApi.TrackObjectFull[] = [];
+    let queue = [rootNode];
     while (queue.length > 0) {
-      const curr = queue.pop();
+      const curr = queue.shift();
       if (curr) {
         tracks.push(curr.value);
-        queue = [...queue, ...curr.children];
+        queue.push(...curr.children);
       }
     }
     return tracks;
@@ -93,50 +96,40 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
   const selectNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-      const updated: TreeNode<SpotifyApi.TrackObjectFull> = {
-        ...node,
-        selected: true,
-      };
-      updateNode(updated);
+      updateNode({ ...node, selected: true });
     },
     [updateNode]
   );
 
   const deselectNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-      const updated: TreeNode<SpotifyApi.TrackObjectFull> = {
-        ...node,
-        selected: false,
-      };
-      updateNode(updated);
+      updateNode({ ...node, selected: false });
     },
     [updateNode]
   );
 
   const deleteNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
+      if (!rootNode) return;
       if (node.parent) {
-        const parentChildren = node.parent.children.filter(child => child.id !== node.id);
         const updatedParent: TreeNode<SpotifyApi.TrackObjectFull> = {
           ...node.parent,
-          children: [...parentChildren, ...node.children],
+          children: [...node.parent.children.filter((child) => child.id !== node.id), ...node.children],
         };
         updateNode(updatedParent);
+      } else if (node.children.length > 0) {
+        const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
+          ...node.children[0],
+          id: generateId(),
+          children: node.children.slice(1),
+          parent: null,
+        };
+        setRootNode(newRoot);
       } else {
-        if (node.children.length > 0) {
-          const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
-            ...node.children[0],
-            id: node.id,
-            children: node.children.slice(1),
-            parent: null
-          };
-          updateNode(newRoot);
-        } else {
-          setRootNode(undefined);
-        }
+        setRootNode(null);
       }
     },
-    [updateNode]
+    [rootNode, generateId, updateNode]
   );
 
   return (

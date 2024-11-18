@@ -7,7 +7,7 @@ export interface TreeNode<T> {
 }
 
 export interface TrackTreeContextType {
-  rootNode: TreeNode<SpotifyApi.TrackObjectFull> | undefined;
+  rootNode: TreeNode<SpotifyApi.TrackObjectFull> | null;
   updateNode: (nodeToUpdate: TreeNode<SpotifyApi.TrackObjectFull>) => void;
   addChildrenToNode: (
     parentNode: TreeNode<SpotifyApi.TrackObjectFull>,
