@@ -4,7 +4,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import { useSpotify } from "../utils/useSpotify";
 import { MdOutlineAdd, MdPause, MdPlayArrow, MdRefresh, MdRemove } from "react-icons/md";
 import { useTrackTree } from "../utils/TrackTreeContext";
-import { IoMdTrash } from "react-icons/io";
+// import { IoMdTrash } from "react-icons/io";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
@@ -31,7 +31,7 @@ export default function TrackTreeNode({
   radius = 0,
   radiusStep = 300,
 }: Props) {
-  const { deselectNode, selectNode, deleteNode } = useTrackTree();
+  const { deselectNode, selectNode } = useTrackTree();
   const { getRecommendations, reload } = useSpotify(spotifyApi);
   const [position, setPosition] = useState<NodePosition>({ x: 0, y: 0, angle: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -67,15 +67,6 @@ export default function TrackTreeNode({
       audioRef.current = null;
     }
     setIsPlaying(false);
-  };
-
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    deleteNode(node);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
   };
 
   const handlePlay = (e: React.MouseEvent) => {
