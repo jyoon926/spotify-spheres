@@ -25,6 +25,27 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
     [generateId]
   );
 
+  const findNodeById = useCallback(
+    (id: string): TreeNode<SpotifyApi.TrackObjectFull> | undefined => {
+      if (!rootNode) return undefined;
+
+      const queue = [rootNode];
+      while (queue.length > 0) {
+        const current = queue.shift();
+        if (!current) continue;
+
+        if (current.id === id) {
+          return current;
+        }
+
+        queue.push(...current.children);
+      }
+
+      return undefined;
+    },
+    [rootNode]
+  );
+
   const updateNode = useCallback(
     (nodeToUpdate: TreeNode<SpotifyApi.TrackObjectFull>) => {
       if (!rootNode) return;
@@ -111,17 +132,20 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   const deleteNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
       if (!rootNode) return;
-      if (node.parent) {
+      const currentNode = findNodeById(node.id)!;
+      if (currentNode.parent) {
+        const parent = findNodeById(currentNode.parent.id)!;
+        const children = [...parent.children.filter((child) => child.id !== node.id), ...currentNode.children];
         const updatedParent: TreeNode<SpotifyApi.TrackObjectFull> = {
-          ...node.parent,
-          children: [...node.parent.children.filter((child) => child.id !== node.id), ...node.children],
+          ...currentNode.parent,
+          children,
         };
         updateNode(updatedParent);
-      } else if (node.children.length > 0) {
+      } else if (currentNode.children.length > 0) {
         const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
-          ...node.children[0],
+          ...currentNode.children[0],
           id: generateId(),
-          children: node.children.slice(1),
+          children: [...currentNode.children[0].children, ...currentNode.children.slice(1)],
           parent: null,
         };
         setRootNode(newRoot);
