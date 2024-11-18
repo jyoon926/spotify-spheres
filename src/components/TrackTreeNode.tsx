@@ -142,11 +142,11 @@ export default function TrackTreeNode({
         onClick={handleClick}
       >
         <div className="flex flex-col gap-2">
+          <div className="absolute w-36 h-36 flex justify-center items-center"><div className="spinner"></div></div>
           <div
-            className="w-36 h-36 bg-cover"
+            className="w-36 h-36 bg-cover z-10"
             style={{
-              backgroundImage: `url(${node.value.album?.images[0].url})`,
-              opacity: node.children.length > 0 ? "1" : "0.5",
+              backgroundImage: `url(${node.value.album?.images[0].url})`
             }}
           />
           <div className="w-36 flex flex-col gap-1">

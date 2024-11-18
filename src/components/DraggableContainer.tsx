@@ -204,7 +204,7 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
             style={{
               width: "1000%",
               height: "1000%",
-              backgroundImage: `radial-gradient(circle, #d6d6d4 1px, transparent 1px)`,
+              backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.2) 1px, transparent 1px)`,
               backgroundSize: "25px 25px",
             }}
           />

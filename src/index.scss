@@ -1,5 +1,5 @@
 :root {
-  font-family: Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   // font-family: "early-sans-variable", sans-serif;
   // font-variation-settings: "wght" 400;
   font-synthesis: none;
@@ -7,8 +7,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --background: 245, 245, 245;
-  --foreground: 91, 92, 82;
+  --background: 30, 30, 30;
+  --foreground: 245, 245, 245;
 }
 
 * {
@@ -108,7 +108,6 @@ input {
   border-top-color: rgb(var(--foreground));
   border-radius: 100%;
   animation: spin 1s linear infinite;
-  margin-left: 10px;
 }
 
 @keyframes spin {
