@@ -71,13 +71,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
               key={result.id}
               onClick={() => onSelected(result)}
             >
-              <div className="absolute w-10 h-10 flex justify-center items-center"><div className="spinner"></div></div>
-              <div
-                className="w-10 h-10 bg-cover z-10"
-                style={{
-                  backgroundImage: `url(${result.album?.images[0].url})`,
-                }}
-              />
+              <img className="w-12 h-12 bg-lighter" src={result.album?.images[0].url} alt={result.album?.images[0].url} />
               <div className="flex grow flex-col justify-start items-start">
                 <div className="w-[210px] leading-[1.1] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">{result.name}</div>
                 <div className="w-[210px] leading-[1.1] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">

@@ -133,7 +133,7 @@ export default function TrackTreeNode({
 
       {/* Node content */}
       <div
-        className={`absolute -translate-x-1/2 -translate-y-1/2 border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-md transition-all duration-300 overflow-hidden ${
+        className={`absolute -translate-x-1/2 -translate-y-1/2 border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-md transition-all duration-300 overflow-hidden cursor-pointer ${
           node.selected && "border-foreground"
         }`}
         style={{
@@ -142,13 +142,7 @@ export default function TrackTreeNode({
         onClick={handleClick}
       >
         <div className="flex flex-col gap-2">
-          <div className="absolute w-36 h-36 flex justify-center items-center z-0"><div className="spinner"></div></div>
-          <div
-            className="w-36 h-36 bg-cover z-10"
-            style={{
-              backgroundImage: `url(${node.value.album?.images[0].url})`
-            }}
-          />
+          <img className="w-36 h-36 bg-lighter" src={node.value.album?.images[0].url} alt={node.value.album?.images[0].url} />
           <div className="w-36 flex flex-col gap-1">
             <div className="whitespace-nowrap text-ellipsis overflow-hidden">{node.value.name}</div>
             <div className="opacity-60 whitespace-nowrap text-ellipsis overflow-hidden">

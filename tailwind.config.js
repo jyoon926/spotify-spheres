@@ -6,6 +6,7 @@ export default {
       colors: {
         background: "rgb(var(--background))",
         foreground: "rgb(var(--foreground))",
+        lighter: "rgba(var(--foreground), 0.1)",
         light: "rgba(var(--foreground), 0.2)",
         medium: "rgba(var(--foreground), 0.3)",
         glass: "rgba(var(--background), 0.5)",
