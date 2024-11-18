@@ -101,6 +101,10 @@ input {
   }
 }
 
+::placeholder {
+  color: rgba(var(--foreground), 0.6) !important;
+}
+
 .spinner {
   width: 14px;
   height: 14px;
