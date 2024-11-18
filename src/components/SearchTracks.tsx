@@ -52,34 +52,35 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row items-center gap-3">
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex grow flex-row items-center gap-3">
         <input
-          className="w-80"
+          className="grow"
           type="text"
           placeholder="Search for a song"
           value={query}
           onChange={handleQueryChange}
         />
-        <div className={`spinner ${!loading && "opacity-0"}`} />
       </div>
-      {results.length > 0 && (
-        <div className="flex flex-col gap-3 border-2 bg-glass backdrop-blur-md p-3">
+      {(results.length > 0 || loading) && (
+        <div className="flex grow flex-col gap-3 border-2 bg-glass backdrop-blur-md p-3">
+          {loading && <div className="spinner" />}
           {results.map((result) => (
             <button
-              className="flex flex-row justify-start items-center gap-3"
+              className="flex grow flex-row justify-start items-center gap-3"
               key={result.id}
               onClick={() => onSelected(result)}
             >
+              <div className="absolute w-10 h-10 flex justify-center items-center"><div className="spinner"></div></div>
               <div
-                className="w-10 h-10 bg-cover"
+                className="w-10 h-10 bg-cover z-10"
                 style={{
                   backgroundImage: `url(${result.album?.images[0].url})`,
                 }}
               />
-              <div className="flex flex-col justify-start items-start">
-                <div className="leading-[1.1] whitespace-nowrap text-ellipsis overflow-hidden w-64 text-left">{result.name}</div>
-                <div className="leading-[1.1] whitespace-nowrap text-ellipsis overflow-hidden w-64 text-left opacity-60">
+              <div className="flex grow flex-col justify-start items-start">
+                <div className="w-[210px] leading-[1.1] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">{result.name}</div>
+                <div className="w-[210px] leading-[1.1] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
                   {result.artists[0].name}
                 </div>
               </div>

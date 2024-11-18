@@ -23,7 +23,7 @@ export default function TrackTree({ spotifyApi }: Props) {
       {rootNode ? (
         <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />
       ) : (
-        <div className="absolute" onClick={stopPropagation} onMouseDown={stopPropagation}>
+        <div className="w-full max-w-96 p-3" onClick={stopPropagation} onMouseDown={stopPropagation}>
           <SearchTracks spotifyApi={spotifyApi} onSelected={handleSelectInitial} />
         </div>
       )}
