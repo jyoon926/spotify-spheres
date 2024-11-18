@@ -85,3 +85,35 @@ body {
     display: none;
   }
 }
+
+input {
+  background: rgba(var(--background), 0.6);
+  color: var(--foreground);
+  backdrop-filter: blur(8px);
+  border-width: 2px;
+  padding: 0.6rem !important;
+  outline: none !important;
+  transition-duration: 300ms;
+
+  &:focus {
+    border-color: rgb(var(--foreground));
+  }
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+  border-top-color: rgb(var(--foreground));
+  border-radius: 100%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
+  }
+}

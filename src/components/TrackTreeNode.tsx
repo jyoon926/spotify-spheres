@@ -172,11 +172,9 @@ export default function TrackTreeNode({
           <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleReload}>
             <MdRefresh />
           </button>
-          {node.children.length > 0 && (
-            <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDelete}>
-              <IoMdTrash />
-            </button>
-          )}
+          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDelete}>
+            <IoMdTrash />
+          </button>
         </div>
       </div>
 

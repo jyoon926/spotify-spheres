@@ -99,7 +99,6 @@ const DraggableContainer: React.FC<DraggableContainerProps> = ({
   // Mouse event handlers
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      e.preventDefault();
       handleStart(e.clientX, e.clientY);
     },
     [handleStart]

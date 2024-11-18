@@ -118,6 +118,8 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
             parent: null
           };
           updateNode(newRoot);
+        } else {
+          setRootNode(undefined);
         }
       }
     },
