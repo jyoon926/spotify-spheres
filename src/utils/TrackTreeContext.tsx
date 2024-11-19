@@ -68,17 +68,18 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
   const addChildrenToNode = useCallback(
     (parentNode: TreeNode<SpotifyApi.TrackObjectFull>, newChildren: SpotifyApi.TrackObjectFull[]) => {
+      const parent = findNodeById(parentNode.id)!;
       const childNodes: TreeNode<SpotifyApi.TrackObjectFull>[] = newChildren.map((track) => ({
         id: generateId(),
         value: track,
         children: [],
-        parent: parentNode,
+        parent,
         selected: false,
       }));
 
       const updatedParentNode: TreeNode<SpotifyApi.TrackObjectFull> = {
-        ...parentNode,
-        children: [...parentNode.children, ...childNodes],
+        ...parent,
+        children: [...parent.children, ...childNodes],
         selected: true,
       };
 
@@ -117,14 +118,16 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
   const selectNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-      updateNode({ ...node, selected: true });
+      const currentNode = findNodeById(node.id)!;
+      updateNode({ ...currentNode, selected: true });
     },
     [updateNode]
   );
 
   const deselectNode = useCallback(
     (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-      updateNode({ ...node, selected: false });
+      const currentNode = findNodeById(node.id)!;
+      updateNode({ ...currentNode, selected: false });
     },
     [updateNode]
   );
