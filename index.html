@@ -1,14 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>Spotify Spheres</title>
-    <link rel="stylesheet" href="https://use.typekit.net/yrp6ncc.css">
+    <link rel="stylesheet" href="https://use.typekit.net/yrp6ncc.css" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
+  <script>
+    document.addEventListener("gesturestart", function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener("gesturechange", function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener("gestureend", function (e) {
+      e.preventDefault();
+    });
+  </script>
 </html>
