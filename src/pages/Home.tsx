@@ -24,7 +24,7 @@ export default function Home() {
       {spotifyApi ? (
         <TrackTreePage spotifyApi={spotifyApi} />
       ) : (
-        <div className="fixed inset-0 flex flex-col justify-center items-center gap-10 p-5">
+        <div className="absolute inset-0 flex flex-col justify-center items-center gap-10 p-5">
           <h1 className="max-w-[700px] text-center text-4xl sm:text-5xl md:text-6xl">
             Discover music and explore your taste like never before.
           </h1>

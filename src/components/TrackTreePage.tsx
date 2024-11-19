@@ -12,7 +12,7 @@ interface Props {
 export default function TrackTreePage({ spotifyApi }: Props) {
   return (
     <TrackTreeProvider>
-      <div className="w-[400px] h-[400px]">
+      <div className="absolute inset-0">
         <TransformWrapper initialScale={10} minScale={5} maxScale={20} centerOnInit={true} wheel={{ step: 2, smoothStep: 0.01 }}>
           {({ centerView }) => (
             <Fragment>
