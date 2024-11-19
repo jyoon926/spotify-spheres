@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TreeNode } from "../utils/Types";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useSpotify } from "../utils/useSpotify";
@@ -6,6 +6,7 @@ import { MdOutlineAdd, MdPause, MdPlayArrow, MdRefresh, MdRemove } from "react-i
 import { useTrackTree } from "../utils/TrackTreeContext";
 import { IoMdTrash } from "react-icons/io";
 import { RiAsterisk } from "react-icons/ri";
+import { useAudioPlayer } from "../utils/AudioPlayerContext";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
@@ -36,7 +37,7 @@ export default function TrackTreeNode({
   const { getRecommendations, reload } = useSpotify(spotifyApi);
   const [position, setPosition] = useState<NodePosition>({ x: 0, y: 0, angle: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { currentTrack, playAudio, pauseAudio } = useAudioPlayer();
 
   useEffect(() => {
     // Convert angle to radians and calculate position
@@ -63,38 +64,23 @@ export default function TrackTreeNode({
   const handleReload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     await reload(node);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-    setIsPlaying(false);
+    if (isPlaying) pauseAudio();
   };
 
   const handlePlay = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isPlaying) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    } else {
-      if (node.value.preview_url) {
-        const audio = new Audio(node.value.preview_url);
-        audio.loop = true;
-        audioRef.current = audio;
-        audio.play();
-      }
-    }
-    setIsPlaying((prev) => !prev);
+    if (isPlaying) pauseAudio();
+    else playAudio(node.value);
   };
+
+  useEffect(() => {
+    setIsPlaying(currentTrack === node.value);
+  }, [currentTrack]);
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     deleteNode(node);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    if (isPlaying) pauseAudio();
   };
 
   // Calculate child positions

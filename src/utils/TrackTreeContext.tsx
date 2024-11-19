@@ -93,11 +93,11 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
     const tracks: SpotifyApi.TrackObjectFull[] = [];
     let queue = [rootNode];
     while (queue.length > 0) {
-      const curr = queue.shift();
-      if (curr && curr.selected) {
+      const curr = queue.shift()!;
+      if (curr.selected) {
         tracks.push(curr.value);
-        queue.push(...curr.children);
       }
+      queue.push(...curr.children);
     }
     return tracks;
   }, [rootNode]);
@@ -107,11 +107,9 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
     const tracks: SpotifyApi.TrackObjectFull[] = [];
     let queue = [rootNode];
     while (queue.length > 0) {
-      const curr = queue.shift();
-      if (curr) {
-        tracks.push(curr.value);
-        queue.push(...curr.children);
-      }
+      const curr = queue.shift()!;
+      tracks.push(curr.value);
+      queue.push(...curr.children);
     }
     return tracks;
   }, [rootNode]);
