@@ -1,14 +1,17 @@
 import React, { createContext, useContext, useState, useRef } from "react";
+import { MdPause, MdPlayArrow } from "react-icons/md";
 
 type AudioPlayerContextType = {
   currentTrack: SpotifyApi.TrackObjectFull | null;
+  isPlaying: boolean;
   playAudio: (track: SpotifyApi.TrackObjectFull) => void;
-  pauseAudio: () => void;
+  pauseAudio: (reset?: boolean) => void;
 };
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | undefined>(undefined);
 
 export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTrack, setCurrentTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -20,33 +23,46 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.play();
+        setIsPlaying(true);
       }
     }, 10);
   };
 
-  const pauseAudio = () => {
+  const pauseAudio = (reset: boolean = false) => {
     if (audioRef.current) {
-      setCurrentTrack(null);
+      if (reset) setCurrentTrack(null);
       audioRef.current.pause();
+      setIsPlaying(false);
     }
   };
 
   return (
-    <AudioPlayerContext.Provider value={{ currentTrack, playAudio, pauseAudio }}>
+    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio }}>
       {children}
-      <div
-        className={`fixed right-3 flex flex-col gap-2 p-3 border-2 bg-glass backdrop-blur-lg duration-300 ${
-          currentTrack ? "bottom-3" : "bottom-[-80px]"
-        }`}
-      >
-        <p className="opacity-60 italic">Now playing:</p>
-        <div className="flex flex-row items-center gap-3">
-          <img className="w-12 h-12" src={currentTrack?.album.images[0].url} />
-          <div className="w-36 flex flex-col">
-            <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] ">{currentTrack?.name}</p>
-            <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] opacity-60">
-              {currentTrack?.artists[0].name}
-            </p>
+      <div className={`fixed left-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
+        <div className="flex flex-col gap-2 p-3 border-2 bg-glass backdrop-blur-lg">
+          <p className="opacity-60">Currently previewing:</p>
+          <div className="flex flex-row items-center gap-3">
+            {currentTrack ? (
+              <img className="w-12 h-12 bg-lighter" src={currentTrack.album.images[0].url} />
+            ) : (
+              <div className="w-12 h-12 bg-lighter" />
+            )}
+            <div className="w-48 flex grow flex-col">
+              <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] ">{currentTrack?.name}</p>
+              <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] opacity-60">
+                {currentTrack?.artists[0].name}
+              </p>
+            </div>
+            {isPlaying ? (
+              <button className="text-3xl p-1" onClick={() => pauseAudio()}>
+                <MdPause />
+              </button>
+            ) : (
+              <button className="text-3xl p-1" onClick={() => playAudio(currentTrack!)}>
+                <MdPlayArrow />
+              </button>
+            )}
           </div>
         </div>
         <audio ref={audioRef} src={currentTrack?.preview_url} loop={true} />

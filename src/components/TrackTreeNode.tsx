@@ -37,7 +37,7 @@ export default function TrackTreeNode({
   const { getRecommendations, reload } = useSpotify(spotifyApi);
   const [position, setPosition] = useState<NodePosition>({ x: 0, y: 0, angle: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
-  const { currentTrack, playAudio, pauseAudio } = useAudioPlayer();
+  const { currentTrack, isPlaying: _isPlaying, playAudio, pauseAudio } = useAudioPlayer();
 
   useEffect(() => {
     // Convert angle to radians and calculate position
@@ -64,7 +64,7 @@ export default function TrackTreeNode({
   const handleReload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     await reload(node);
-    if (isPlaying) pauseAudio();
+    if (isPlaying) pauseAudio(true);
   };
 
   const handlePlay = (e: React.MouseEvent) => {
@@ -73,15 +73,15 @@ export default function TrackTreeNode({
     else playAudio(node.value);
   };
 
-  useEffect(() => {
-    setIsPlaying(currentTrack === node.value);
-  }, [currentTrack]);
-
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     deleteNode(node);
-    if (isPlaying) pauseAudio();
+    if (isPlaying) pauseAudio(true);
   };
+
+  useEffect(() => {
+    setIsPlaying(currentTrack === node.value && _isPlaying);
+  }, [currentTrack, _isPlaying]);
 
   // Calculate child positions
   const childCount = node.children.length;
