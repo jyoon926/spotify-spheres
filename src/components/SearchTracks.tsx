@@ -63,7 +63,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
         />
       </div>
       {(results.length > 0 || loading) && (
-        <div className="flex grow flex-col gap-3 border-2 bg-glass backdrop-blur-md p-3">
+        <div className="flex grow flex-col gap-3 border-2 bg-glass backdrop-blur-lg p-3">
           {loading && <div className="spinner" />}
           {results.map((result) => (
             <button

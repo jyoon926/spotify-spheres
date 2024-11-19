@@ -31,7 +31,7 @@ export default function TrackList({ spotifyApi }: Props) {
   return (
     <div className="absolute bottom-0 left-0 p-3 flex m-h-full overflow-hidden">
       <div
-        className={`border-2 p-3 flex flex-col gap-3 bg-glass backdrop-blur-md duration-300 ${
+        className={`border-2 p-3 flex flex-col gap-3 bg-glass backdrop-blur-lg duration-300 ${
           trackList.length === 0 && "translate-y-20"
         }`}
       >

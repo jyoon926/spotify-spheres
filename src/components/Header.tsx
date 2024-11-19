@@ -17,7 +17,7 @@ export default function Header() {
 
   // return (
   //   <div className="fixed top-0 left-0 w-full flex justify-center p-3 z-50 pointer-events-none">
-  //     <div className="flex flex-row w-full max-w-[500px] h-14 justify-between items-center bg-glass border-2 px-5 backdrop-blur-md pointer-events-auto">
+  //     <div className="flex flex-row w-full max-w-[500px] h-14 justify-between items-center bg-glass border-2 px-5 backdrop-blur-lg pointer-events-auto">
   //       <Link className="link text-lg" to="/">Spotify Spheres</Link>
   //       {isAuthenticated ? (
   //         <div className="flex flex-row gap-3">

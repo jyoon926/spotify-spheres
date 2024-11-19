@@ -136,7 +136,7 @@ export default function TrackTreeNode({
 
       {/* Node content */}
       <div
-        className={`absolute border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-md transition-all duration-300 overflow-hidden ${
+        className={`absolute border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-lg transition-all duration-300 overflow-hidden ${
           node.selected && "border-foreground"
         }`}
         style={{
