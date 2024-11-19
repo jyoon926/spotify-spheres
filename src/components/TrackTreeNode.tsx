@@ -150,8 +150,8 @@ export default function TrackTreeNode({
             alt={node.value.album?.images[0].url}
           />
           <div className="w-36 flex flex-col gap-1">
-            <div className="whitespace-nowrap text-ellipsis overflow-hidden">{node.value.name}</div>
-            <div className="opacity-60 whitespace-nowrap text-ellipsis overflow-hidden">
+            <div className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.1]">{node.value.name}</div>
+            <div className="opacity-60 whitespace-nowrap text-ellipsis overflow-hidden leading-[1.1]">
               {node.value.artists[0].name}
             </div>
           </div>

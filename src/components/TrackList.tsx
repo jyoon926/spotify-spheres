@@ -53,14 +53,14 @@ export default function TrackList({ spotifyApi }: Props) {
                 </a>
                 <div className="w-64 flex flex-col gap-1">
                   <a
-                    className="whitespace-nowrap text-ellipsis overflow-hidden hover:underline"
+                    className="leading-[1.1] whitespace-nowrap text-ellipsis overflow-hidden hover:underline"
                     href={track.external_urls.spotify}
                     target="_blank"
                   >
                     {track.name}
                   </a>
                   <a
-                    className="opacity-60 whitespace-nowrap text-ellipsis overflow-hidden hover:underline"
+                    className="leading-[1.1] whitespace-nowrap text-ellipsis overflow-hidden hover:underline opacity-60"
                     href={track.artists[0].external_urls.spotify}
                     target="_blank"
                   >
