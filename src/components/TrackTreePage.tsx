@@ -17,7 +17,7 @@ export default function TrackTreePage({ spotifyApi }: Props) {
         <div className="absolute inset-0">
           <TransformWrapper
             initialScale={10}
-            minScale={5}
+            minScale={3}
             maxScale={20}
             centerOnInit={true}
             wheel={{ step: 2, smoothStep: 0.01 }}

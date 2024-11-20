@@ -46,6 +46,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
             target_acousticness: averageFeatures.acousticness,
             target_danceability: averageFeatures.danceability,
             target_energy: averageFeatures.energy,
+            market: user!.country
           });
 
           for (const track of response.tracks) {
