@@ -48,7 +48,7 @@ export default function TrackTreeNode({
   }, [angle, radius]);
 
   const handleGetRecommendations = async () => {
-    await getRecommendations(node, node.children.length > 0 ? 1 : Math.max(3 - depth, 1));
+    await getRecommendations(node, node.children.length > 0 ? 1 : Math.max(4 - depth, 1));
   };
 
   const handleDeselect = (e: React.MouseEvent) => {
@@ -64,7 +64,7 @@ export default function TrackTreeNode({
   const handleReload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     await reload(node);
-    if (isPlaying) pauseAudio(true);
+    if (isPlaying) pauseAudio();
   };
 
   const handlePlay = (e: React.MouseEvent) => {
@@ -76,7 +76,7 @@ export default function TrackTreeNode({
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     deleteNode(node);
-    if (isPlaying) pauseAudio(true);
+    if (isPlaying) pauseAudio();
   };
 
   useEffect(() => {
@@ -108,9 +108,7 @@ export default function TrackTreeNode({
         return (
           <div
             key={`line-${index}`}
-            className={`absolute origin-left border-t-2 border-dashed transition-all ${
-              child.selected ? "border-foreground" : "border-light"
-            }`}
+            className="absolute origin-left border-t-2 border-dashed transition-all"
             style={{
               width: lineLength,
               transform: `rotate(${lineAngle}deg)`,

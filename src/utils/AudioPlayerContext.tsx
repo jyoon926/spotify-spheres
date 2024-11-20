@@ -5,7 +5,7 @@ type AudioPlayerContextType = {
   currentTrack: SpotifyApi.TrackObjectFull | null;
   isPlaying: boolean;
   playAudio: (track: SpotifyApi.TrackObjectFull) => void;
-  pauseAudio: (reset?: boolean) => void;
+  pauseAudio: () => void;
 };
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | undefined>(undefined);
@@ -28,9 +28,9 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }, 10);
   };
 
-  const pauseAudio = (reset: boolean = false) => {
+  const pauseAudio = () => {
     if (audioRef.current) {
-      if (reset) setCurrentTrack(null);
+      setCurrentTrack(null);
       audioRef.current.pause();
       setIsPlaying(false);
     }
@@ -41,7 +41,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       {children}
       <div className={`fixed left-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
         <div className="flex flex-col gap-2 p-3 border-2 bg-glass backdrop-blur-lg">
-          <p className="opacity-60">Currently previewing:</p>
+          <p className="opacity-60">Listening to:</p>
           <div className="flex flex-row items-center gap-3">
             {currentTrack ? (
               <img className="w-12 h-12 bg-lighter" src={currentTrack.album.images[0].url} />
