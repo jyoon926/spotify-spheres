@@ -24,12 +24,21 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
         const seedTracks = getSeedTracks(node);
         const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
         const count = features.audio_features.length;
+        const calculateAverage = (key: string) =>
+          Math.round((features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count) * 10) / 10;
         const averageFeatures = {
-          acousticness:
-            Math.round((features.audio_features.reduce((sum, obj) => sum + obj.acousticness, 0) / count) * 10) / 10,
-          danceability:
-            Math.round((features.audio_features.reduce((sum, obj) => sum + obj.danceability, 0) / count) * 10) / 10,
-          energy: Math.round((features.audio_features.reduce((sum, obj) => sum + obj.energy, 0) / count) * 10) / 10,
+          acousticness: calculateAverage("acousticness"),
+          danceability: calculateAverage("danceability"),
+          energy: calculateAverage("energy"),
+          instrumentalness: calculateAverage("instrumentalness"),
+          key: calculateAverage("key"),
+          liveness: calculateAverage("liveness"),
+          loudness: calculateAverage("loudness"),
+          mode: calculateAverage("mode"),
+          speechiness: calculateAverage("speechiness"),
+          tempo: calculateAverage("tempo"),
+          time_signature: calculateAverage("time_signature"),
+          valence: calculateAverage("valence"),
         };
         const uniqueTracks: SpotifyApi.TrackObjectFull[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));

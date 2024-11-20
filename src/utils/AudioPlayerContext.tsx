@@ -39,31 +39,30 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   return (
     <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio }}>
       {children}
-      <div className={`fixed left-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
-        <div className="flex flex-col gap-2 p-3 border-2 bg-glass backdrop-blur-lg">
-          <p className="opacity-60">Listening to:</p>
-          <div className="flex flex-row items-center gap-3">
+      <div className={`fixed w-full sm:w-auto right-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
+        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 border-2 bg-glass backdrop-blur-lg">
+          <div className="flex flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
               <img className="w-12 h-12 bg-lighter" src={currentTrack.album.images[0].url} />
             ) : (
               <div className="w-12 h-12 bg-lighter" />
             )}
-            <div className="w-48 flex grow flex-col">
+            <div className="flex flex-col overflow-hidden">
               <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] ">{currentTrack?.name}</p>
               <p className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] opacity-60">
                 {currentTrack?.artists[0].name}
               </p>
             </div>
-            {isPlaying ? (
-              <button className="text-3xl p-1" onClick={() => pauseAudio()}>
-                <MdPause />
-              </button>
-            ) : (
-              <button className="text-3xl p-1" onClick={() => playAudio(currentTrack!)}>
-                <MdPlayArrow />
-              </button>
-            )}
           </div>
+          {isPlaying ? (
+            <button className="text-3xl p-1" onClick={() => pauseAudio()}>
+              <MdPause />
+            </button>
+          ) : (
+            <button className="text-3xl p-1" onClick={() => playAudio(currentTrack!)}>
+              <MdPlayArrow />
+            </button>
+          )}
         </div>
         <audio ref={audioRef} src={currentTrack?.preview_url} loop={true} />
       </div>

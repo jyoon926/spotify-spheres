@@ -135,7 +135,7 @@ export default function TrackTreeNode({
           />
           <div className="w-36 flex flex-col">
             <div className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25]">{node.value.name}</div>
-            <div className="opacity-60 whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25]">
+            <div className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] opacity-60">
               {node.value.artists[0].name}
             </div>
           </div>
