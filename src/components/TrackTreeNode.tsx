@@ -97,7 +97,7 @@ export default function TrackTreeNode({
       }}
     >
       {/* Connection lines to children */}
-      {node.children.map((child, index) => {
+      {node.children.map((_, index) => {
         const childAngle = startAngle + childAngleStep * (index + 0.5);
         const childAngleRad = (childAngle * Math.PI) / 180;
         const childX = radiusStep * Math.cos(childAngleRad);
