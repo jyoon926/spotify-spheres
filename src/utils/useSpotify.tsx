@@ -57,7 +57,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
           });
 
           for (const track of response.tracks) {
-            if (!seenTrackNames.has(track.name)) {
+            if (!seenTrackNames.has(track.name) && track.preview_url) {
               uniqueTracks.push(track as SpotifyApi.TrackObjectFull);
               seenTrackNames.add(track.name);
               if (uniqueTracks.length >= limit) break;

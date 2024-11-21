@@ -15,32 +15,15 @@ export default function TrackTreePage({ spotifyApi }: Props) {
     <TrackTreeProvider>
       <AudioPlayerProvider>
         <div className="absolute inset-0">
-          <TransformWrapper
-            initialScale={10}
-            minScale={3}
-            maxScale={20}
-            centerOnInit={true}
-            wheel={{ step: 2, smoothStep: 0.01 }}
-          >
+          <TransformWrapper initialScale={1} minScale={0.3} maxScale={2} centerOnInit={true}>
             {({ centerView }) => (
               <Fragment>
                 <TransformComponent>
-                  <div className="flex w-full justify-center items-center scale-[.1]">
-                    <div
-                      className="absolute"
-                      style={{
-                        width: "10000px",
-                        height: "10000px",
-                        backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.2) 1px, transparent 1px)`,
-                        backgroundSize: "30px 30px",
-                      }}
-                    />
-                    <TrackTree spotifyApi={spotifyApi} />
-                  </div>
+                  <TrackTree spotifyApi={spotifyApi} />
                 </TransformComponent>
                 <div className="fixed top-3 left-1/2 -translate-x-1/2">
                   <button
-                    onClick={() => centerView(10)}
+                    onClick={() => centerView(1)}
                     className="button light sm transition-all duration-200 ease-in-out"
                   >
                     Reset view

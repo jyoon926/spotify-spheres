@@ -8,8 +8,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --background: 30, 30, 30;
-  --foreground: 245, 245, 245;
+  --background: 0, 0, 0;
+  --foreground: 255, 255, 255;
 }
 
 * {
@@ -45,7 +45,7 @@ body {
     border-width: 2px;
 
     &:hover {
-      background: rgba(var(--background), 1);
+      background: rgba(var(--background), 0.8);
     }
   }
 
@@ -100,7 +100,6 @@ input {
   padding: 0.6rem !important;
   outline: none !important;
   transition-duration: 300ms;
-  border-radius: 0;
 
   &:focus {
     border-color: rgb(var(--foreground));
@@ -130,11 +129,6 @@ input {
 }
 
 .react-transform-wrapper {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.react-transform-component {
   width: 100% !important;
   height: 100% !important;
 }

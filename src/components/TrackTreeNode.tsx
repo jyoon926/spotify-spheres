@@ -93,7 +93,6 @@ export default function TrackTreeNode({
       className="absolute hover:z-10"
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: "transform 0.5s ease-out",
       }}
     >
       {/* Connection lines to children */}
@@ -108,7 +107,7 @@ export default function TrackTreeNode({
         return (
           <div
             key={`line-${index}`}
-            className="absolute origin-left border-t-2 border-dashed transition-all"
+            className="absolute origin-left border-t-2 border-dashed"
             style={{
               width: lineLength,
               transform: `rotate(${lineAngle}deg)`,
@@ -120,7 +119,7 @@ export default function TrackTreeNode({
 
       {/* Node content */}
       <div
-        className={`absolute border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-lg transition-all duration-300 overflow-hidden ${
+        className={`absolute border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-lg duration-300 overflow-hidden ${
           node.selected && "border-foreground"
         }`}
         style={{
@@ -140,26 +139,46 @@ export default function TrackTreeNode({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 transition-all w-6">
-          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handlePlay}>
+        <div className="flex flex-col gap-2">
+          <button
+            className={`p-1 border-2 rounded-full duration-300 ${
+              isPlaying ? "bg-light border-transparent" : "hover:bg-light hover:border-transparent"
+            }`}
+            onClick={handlePlay}
+          >
             {isPlaying ? <MdPause /> : <MdPlayArrow />}
           </button>
-          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleGetRecommendations}>
+          <button
+            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            onClick={handleGetRecommendations}
+          >
             <RiAsterisk />
           </button>
           {node.selected ? (
-            <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDeselect}>
+            <button
+              className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+              onClick={handleDeselect}
+            >
               <MdRemove />
             </button>
           ) : (
-            <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleSelect}>
+            <button
+              className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+              onClick={handleSelect}
+            >
               <MdOutlineAdd />
             </button>
           )}
-          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleReload}>
+          <button
+            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            onClick={handleReload}
+          >
             <MdRefresh />
           </button>
-          <button className="p-1 rounded-full duration-300 bg-light hover:bg-medium" onClick={handleDelete}>
+          <button
+            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            onClick={handleDelete}
+          >
             <IoMdTrash />
           </button>
         </div>
