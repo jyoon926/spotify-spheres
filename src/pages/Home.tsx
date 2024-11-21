@@ -2,6 +2,8 @@ import { useAuth } from "../utils/AuthContext";
 import TrackTreePage from "../components/TrackTreePage";
 import { useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
+import { AudioPlayerProvider } from "../utils/AudioPlayerContext";
+import { TrackTreeProvider } from "../utils/TrackTreeContext";
 
 export default function Home() {
   const { login, isAuthenticated, loading, token } = useAuth();
@@ -22,7 +24,11 @@ export default function Home() {
   return (
     <div>
       {spotifyApi ? (
-        <TrackTreePage spotifyApi={spotifyApi} />
+        <TrackTreeProvider>
+          <AudioPlayerProvider>
+            <TrackTreePage spotifyApi={spotifyApi} />
+          </AudioPlayerProvider>
+        </TrackTreeProvider>
       ) : (
         <div className="absolute inset-0 flex flex-col justify-center items-center gap-10 p-5">
           <h1 className="max-w-[700px] text-center text-4xl sm:text-5xl md:text-6xl">

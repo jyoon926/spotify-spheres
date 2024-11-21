@@ -57,7 +57,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
         <input
           className="grow"
           type="text"
-          placeholder="Search for a song"
+          placeholder="Search..."
           value={query}
           onChange={handleQueryChange}
         />

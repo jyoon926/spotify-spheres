@@ -1,7 +1,6 @@
 import TrackTreeNode from "./TrackTreeNode";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useTrackTree } from "../utils/TrackTreeContext";
-import SearchTracks from "./SearchTracks";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 }
 
 export default function TrackTree({ spotifyApi }: Props) {
-  const { rootNode, initializeTree } = useTrackTree();
+  const { rootNode } = useTrackTree();
   const divRef = useRef<HTMLDivElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState<number>(0);
@@ -17,14 +16,6 @@ export default function TrackTree({ spotifyApi }: Props) {
   const [shiftX, setShiftX] = useState<number>(0);
   const [shiftY, setShiftY] = useState<number>(0);
   const [scale, setScale] = useState<number>(1);
-
-  const handleSelectInitial = (track: SpotifyApi.TrackObjectFull) => {
-    initializeTree(track);
-  };
-
-  const stopPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -81,32 +72,25 @@ export default function TrackTree({ spotifyApi }: Props) {
     };
   }, []);
 
+  if (!rootNode) return null;
   return (
-    <>
-      {rootNode ? (
-        <div
-          className="flex justify-center items-center"
-          style={{ width: width / scale + 200 + "px", height: height / scale + 200 + "px" }}
-          ref={wrapperRef}
-        >
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              width: "10000px",
-              height: "10000px",
-              backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.15) 1.5px, transparent 2px)`,
-              backgroundSize: "30px 30px",
-            }}
-          />
-          <div style={{ transform: `translateX(${shiftX / scale}px) translateY(${shiftY / scale}px)` }} ref={divRef}>
-            <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />
-          </div>
-        </div>
-      ) : (
-        <div className="w-full max-w-96 p-3" onClick={stopPropagation} onMouseDown={stopPropagation}>
-          <SearchTracks spotifyApi={spotifyApi} onSelected={handleSelectInitial} />
-        </div>
-      )}
-    </>
+    <div
+      className="flex justify-center items-center"
+      style={{ width: width / scale + 400 + "px", height: height / scale + 400 + "px" }}
+      ref={wrapperRef}
+    >
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: "10000px",
+          height: "10000px",
+          backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.15) 1.5px, transparent 2px)`,
+          backgroundSize: "30px 30px",
+        }}
+      />
+      <div style={{ transform: `translateX(${shiftX / scale}px) translateY(${shiftY / scale}px)` }} ref={divRef}>
+        <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />
+      </div>
+    </div>
   );
 }
