@@ -25,7 +25,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
         const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
         const count = features.audio_features.length;
         const calculateAverage = (key: string) =>
-          Math.round((features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count) * 10) / 10;
+          features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count;
         const averageFeatures = {
           acousticness: calculateAverage("acousticness"),
           danceability: calculateAverage("danceability"),
@@ -40,7 +40,6 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
           time_signature: calculateAverage("time_signature"),
           valence: calculateAverage("valence"),
         };
-        console.log(averageFeatures);
         const uniqueTracks: SpotifyApi.TrackObjectFull[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));
         const maxAttempts = 2;
@@ -54,6 +53,11 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
               .map((t) => t.id)
               .slice(0, 5)
               .join(","),
+            ...(node.parent && {
+              target_danceability: averageFeatures.danceability,
+              target_energy: averageFeatures.energy,
+              target_instrumentalness: averageFeatures.instrumentalness,
+            }),
           });
 
           for (const track of response.tracks) {

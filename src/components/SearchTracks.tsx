@@ -73,8 +73,8 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
             >
               <img className="w-12 h-12 bg-lighter" src={result.album?.images[0].url} alt={result.album?.images[0].url} />
               <div className="flex grow flex-col justify-start items-start">
-                <div className="w-[210px] leading-[1.25] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">{result.name}</div>
-                <div className="w-[210px] leading-[1.25] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
+                <div className="w-[210px] leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">{result.name}</div>
+                <div className="w-[210px] leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
                   {result.artists[0].name}
                 </div>
               </div>
