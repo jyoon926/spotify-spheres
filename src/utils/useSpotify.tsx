@@ -40,6 +40,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
           time_signature: calculateAverage("time_signature"),
           valence: calculateAverage("valence"),
         };
+        console.log(averageFeatures);
         const uniqueTracks: SpotifyApi.TrackObjectFull[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));
         const maxAttempts = 2;
