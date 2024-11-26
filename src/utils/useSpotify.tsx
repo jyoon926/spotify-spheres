@@ -56,7 +56,6 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
             ...(node.parent && {
               target_danceability: averageFeatures.danceability,
               target_energy: averageFeatures.energy,
-              target_instrumentalness: averageFeatures.instrumentalness,
             }),
           });
 
