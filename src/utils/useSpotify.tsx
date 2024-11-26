@@ -53,7 +53,6 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
               .map((t) => t.id)
               .slice(0, 5)
               .join(","),
-            target_energy: averageFeatures.energy,
           });
 
           for (const track of response.tracks) {

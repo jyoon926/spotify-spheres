@@ -47,18 +47,25 @@ export default function TrackTreeNode({
     setPosition({ x, y, angle });
   }, [angle, radius]);
 
-  const handleGetRecommendations = async () => {
-    await getRecommendations(node, node.children.length > 0 ? 1 : Math.max(4 - depth, 1));
+  const handlePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isPlaying) pauseAudio();
+    else playAudio(node.value);
   };
 
-  const handleDeselect = (e: React.MouseEvent) => {
+  const handleGetRecommendations = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    deselectNode(node);
+    await getRecommendations(node, node.children.length > 0 ? 1 : Math.max(4 - depth, 1));
   };
 
   const handleSelect = (e: React.MouseEvent) => {
     e.stopPropagation();
     selectNode(node);
+  };
+
+  const handleDeselect = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    deselectNode(node);
   };
 
   const handleReload = async (e: React.MouseEvent) => {
@@ -67,16 +74,14 @@ export default function TrackTreeNode({
     if (isPlaying) pauseAudio();
   };
 
-  const handlePlay = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isPlaying) pauseAudio();
-    else playAudio(node.value);
-  };
-
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     deleteNode(node);
     if (isPlaying) pauseAudio();
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
 
   useEffect(() => {
@@ -107,7 +112,7 @@ export default function TrackTreeNode({
         return (
           <div
             key={`line-${index}`}
-            className="absolute origin-left border-t-2 border-dashed"
+            className="absolute origin-left border-t-2 backdrop-blur"
             style={{
               width: lineLength,
               transform: `rotate(${lineAngle}deg)`,
@@ -119,14 +124,14 @@ export default function TrackTreeNode({
 
       {/* Node content */}
       <div
-        className={`absolute border-2 p-2 flex flex-row justify-start items-start gap-2 select-none bg-glass backdrop-blur-lg duration-300 overflow-hidden ${
-          node.selected && "border-foreground"
+        className={`absolute p-3 flex flex-row justify-start items-start gap-3 select-none bg-lightGlass rounded-lg backdrop-blur-md duration-100 overflow-hidden ${
+          node.selected && "border-2 border-foreground"
         }`}
         style={{
           transform: `translate(-50%, -50%)`,
         }}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <img
             className="w-36 h-36 bg-lighter pointer-events-none"
             src={node.value.album?.images[0].url}
@@ -141,43 +146,49 @@ export default function TrackTreeNode({
         </div>
         <div className="flex flex-col gap-2">
           <button
-            className={`p-1 border-2 rounded-full duration-300 ${
-              isPlaying ? "bg-light border-transparent" : "hover:bg-light hover:border-transparent"
+            className={`p-1.5 rounded-full duration-300 bg-lighter ${
+              isPlaying ? "bg-light" : "hover:bg-light"
             }`}
             onClick={handlePlay}
+            onDoubleClick={handleClick}
           >
             {isPlaying ? <MdPause /> : <MdPlayArrow />}
           </button>
           <button
-            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleGetRecommendations}
+            onDoubleClick={handleClick}
           >
             <RiAsterisk />
           </button>
           {node.selected ? (
             <button
-              className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+              className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
               onClick={handleDeselect}
+              onDoubleClick={handleClick}
             >
               <MdRemove />
             </button>
           ) : (
             <button
-              className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+              className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
               onClick={handleSelect}
+              onDoubleClick={handleClick}
             >
               <MdOutlineAdd />
             </button>
           )}
           <button
-            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleReload}
+            onDoubleClick={handleClick}
           >
             <MdRefresh />
           </button>
           <button
-            className="p-1 border-2 rounded-full duration-300 hover:bg-light hover:border-transparent"
+            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleDelete}
+            onDoubleClick={handleClick}
           >
             <IoMdTrash />
           </button>

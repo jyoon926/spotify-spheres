@@ -76,7 +76,7 @@ export default function TrackTree({ spotifyApi }: Props) {
   return (
     <div
       className="flex justify-center items-center"
-      style={{ width: width / scale + 400 + "px", height: height / scale + 400 + "px" }}
+      style={{ width: width / scale + 400 + "px", height: height / scale + 400 + "px", transform: `translateX(${shiftX / scale}px) translateY(${shiftY / scale}px)` }}
       ref={wrapperRef}
     >
       <div
@@ -84,11 +84,11 @@ export default function TrackTree({ spotifyApi }: Props) {
         style={{
           width: "10000px",
           height: "10000px",
-          backgroundImage: `radial-gradient(circle, rgba(var(--foreground), 0.15) 1.5px, transparent 2px)`,
+          backgroundImage: `radial-gradient(circle, rgba(var(--gray), 0.6) 1.5px, transparent 2px)`,
           backgroundSize: "30px 30px",
         }}
       />
-      <div style={{ transform: `translateX(${shiftX / scale}px) translateY(${shiftY / scale}px)` }} ref={divRef}>
+      <div ref={divRef}>
         <TrackTreeNode spotifyApi={spotifyApi} node={rootNode} />
       </div>
     </div>

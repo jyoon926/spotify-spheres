@@ -2,9 +2,10 @@ import SpotifyWebApi from "spotify-web-api-js";
 import TrackTree from "./TrackTree";
 import { useTrackTree } from "../utils/TrackTreeContext";
 import TrackList from "./TrackList";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { Fragment } from "react/jsx-runtime";
 import SearchTracks from "./SearchTracks";
+import { useRef } from "react";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
@@ -15,6 +16,15 @@ export default function TrackTreePage({ spotifyApi }: Props) {
 
   const handleSelectInitial = (track: SpotifyApi.TrackObjectFull) => {
     initializeTree(track);
+  };
+
+  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
+
+  const zoomToRoot = () => {
+    if (transformComponentRef.current) {
+      const { zoomToElement } = transformComponentRef.current;
+      zoomToElement("imgExample");
+    }
   };
 
   return (

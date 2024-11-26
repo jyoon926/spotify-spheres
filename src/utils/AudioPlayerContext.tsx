@@ -40,7 +40,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio }}>
       {children}
       <div className={`fixed w-full sm:w-auto right-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
-        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 border-2 bg-glass backdrop-blur-lg">
+        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-lightGlass rounded-lg backdrop-blur-lg">
           <div className="flex flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
               <img className="w-12 h-12 bg-lighter" src={currentTrack.album.images[0].url} />

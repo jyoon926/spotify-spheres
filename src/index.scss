@@ -10,6 +10,7 @@
 
   --background: 0, 0, 0;
   --foreground: 255, 255, 255;
+  --gray: 60, 60, 60;
 }
 
 * {
@@ -37,24 +38,24 @@ body {
   padding: 0.6rem 1.2rem;
   transition-duration: 0.3s;
   opacity: 1;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background: rgba(var(--foreground), 0.8);
+  }
 
   &.light {
-    background: rgba(var(--background), 0.6);
+    background: rgba(var(--gray), 0.6);
     color: var(--foreground);
     backdrop-filter: blur(8px);
-    border-width: 2px;
 
     &:hover {
-      background: rgba(var(--background), 0.8);
+      filter: brightness(1.25);
     }
   }
 
   &.sm {
-    padding: 0.5rem 0.8rem;
-  }
-
-  &:hover {
-    background: rgba(var(--foreground), 0.8);
+    padding: 0.6rem 0.8rem;
   }
 }
 
@@ -74,12 +75,12 @@ body {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(var(--foreground), 0.2);
+    background-color: rgba(var(--gray), 0.6);
     transition-duration: 0.3ms;
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(var(--foreground), 0.4);
+      background-color: rgba(var(--gray), 0.8);
     }
   }
 }
@@ -93,22 +94,17 @@ body {
 }
 
 input {
-  background: rgba(var(--background), 0.6);
+  background: rgba(var(--gray), 0.6);
   color: var(--foreground);
   backdrop-filter: blur(8px);
-  border-width: 2px;
-  padding: 0.6rem !important;
+  padding: 0.6rem 0.8rem !important;
   outline: none !important;
   transition-duration: 300ms;
-  border-radius: 0 !important;
-
-  &:focus {
-    border-color: rgb(var(--foreground));
-  }
+  border-radius: 0.5rem !important;
 }
 
 ::placeholder {
-  color: rgba(var(--foreground), 0.6) !important;
+  color: rgba(var(--foreground), 0.5) !important;
 }
 
 .spinner {
@@ -132,4 +128,12 @@ input {
 .react-transform-wrapper {
   width: 100% !important;
   height: 100% !important;
+}
+
+.clip-none {
+  clip-path: inset(0% 0% 0% 0%);
+}
+
+.clip {
+  clip-path: inset(0% 0% 100% 0%);
 }
