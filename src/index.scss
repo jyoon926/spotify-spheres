@@ -27,11 +27,6 @@ body {
   overflow-x: hidden;
 }
 
-html,
-body {
-  touch-action: none;
-}
-
 .button {
   background: rgb(var(--foreground));
   color: rgb(var(--background));
