@@ -43,9 +43,8 @@ export default function TrackTreePage({ spotifyApi }: Props) {
           <TrackList spotifyApi={spotifyApi} />
         </>
       ) : (
-        <div className="absolute inset-0 flex justify-center items-center p-3">
-          <div className="w-full max-w-[400px] flex flex-col gap-3">
-            <p className="text-2xl">Choose a song to initialize your sphere.</p>
+        <div className="w-full flex justify-center items-center px-3 pt-56 pb-32">
+          <div className="w-full max-w-[800px]">
             <SearchTracks spotifyApi={spotifyApi} onSelected={handleSelectInitial} />
           </div>
         </div>

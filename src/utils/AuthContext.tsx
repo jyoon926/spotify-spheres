@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: RoutesProps) => {
   const login = () => {
     const clientId = import.meta.env.VITE_REACT_APP_SPOTIFY_CLIENT_ID;
     const baseUrl = window.location.origin;
-    const scope = "playlist-modify-public playlist-modify-private user-top-read user-read-private";
+    const scope = "playlist-modify-public playlist-modify-private user-top-read user-read-private user-read-recently-played";
     const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/callback`;
     window.location.href = authUrl;
   };

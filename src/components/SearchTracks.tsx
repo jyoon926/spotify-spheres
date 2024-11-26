@@ -10,8 +10,47 @@ interface Props {
 export default function SearchTracks({ spotifyApi, onSelected }: Props) {
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<SpotifyApi.TrackObjectFull[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
   const [debouncedQuery] = useDebounce(query, 300);
+  const [suggestions, setSuggestions] = useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      setLoadingSuggestions(true);
+      try {
+        const topTracksShort = await spotifyApi.getMyTopTracks({
+          limit: 3,
+          time_range: "short_term",
+        });
+        const topTracksMedium = await spotifyApi.getMyTopTracks({
+          limit: 3,
+          time_range: "medium_term",
+        });
+        const topTracksLong = await spotifyApi.getMyTopTracks({
+          limit: 3,
+          time_range: "long_term",
+        });
+        const recentTracksResponse = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 3 });
+        const combinedTracks = [
+          ...topTracksShort.items,
+          ...topTracksMedium.items,
+          ...topTracksLong.items,
+          ...recentTracksResponse.items.map((item) => item.track as unknown as SpotifyApi.TrackObjectFull),
+        ];
+        const uniqueTracks = combinedTracks.filter(
+          (track, index, self) => index === self.findIndex((t) => t.id === track.id)
+        );
+        setSuggestions(uniqueTracks);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    };
+
+    fetchSuggestions();
+  }, [spotifyApi]);
 
   // Debounce search to avoid too many API calls
   const searchTracks = useCallback(
@@ -21,17 +60,17 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
         return;
       }
 
-      setLoading(true);
+      setLoadingSearch(true);
       spotifyApi
         .searchTracks(searchQuery, { limit: 5 })
         .then((data) => {
           setResults(data.tracks.items);
-          setLoading(false);
+          setLoadingSearch(false);
         })
         .catch((error) => {
           console.error("Error searching tracks:", error);
           setResults([]);
-          setLoading(false);
+          setLoadingSearch(false);
         });
     },
     [spotifyApi]
@@ -43,43 +82,91 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim()) {
-      setLoading(true);
+      setLoadingSearch(true);
     } else {
       setResults([]);
-      setLoading(false);
+      setLoadingSearch(false);
     }
     setQuery(e.target.value);
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex grow flex-row items-center gap-3">
-        <input
-          className="grow"
-          type="text"
-          placeholder="Search..."
-          value={query}
-          onChange={handleQueryChange}
-        />
-      </div>
-      {(results.length > 0 || loading) && (
-        <div className="flex grow flex-col gap-3 bg-lightGlass rounded-lg backdrop-blur-lg p-3">
-          {loading && <div className="spinner" />}
-          {results.map((result) => (
-            <button
-              className="flex grow flex-row justify-start items-center gap-3"
-              key={result.id}
-              onClick={() => onSelected(result)}
-            >
-              <img className="w-12 h-12 bg-lighter" src={result.album?.images[0].url} alt={result.album?.images[0].url} />
-              <div className="flex grow flex-col justify-start items-start">
-                <div className="w-[210px] leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">{result.name}</div>
-                <div className="w-[210px] leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
-                  {result.artists[0].name}
+    <div className="flex flex-col gap-5 w-full justify-start items-start">
+      <p className="text-4xl">Choose a song to initialize your sphere.</p>
+
+      {/* Search */}
+      <div className="flex flex-col gap-3 w-full justify-start items-start">
+        <div className="w-full flex flex-row items-center gap-3">
+          <input
+            className="w-full max-w-[300px]"
+            type="text"
+            placeholder="Search..."
+            value={query}
+            onChange={handleQueryChange}
+          />
+          {loadingSearch && <div className="spinner" />}
+        </div>
+        {results.length > 0 && (
+          <div className="flex flex-col w-full">
+            {results.map((result) => (
+              <button
+                className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg px-3 py-2 hover:bg-lightGlass"
+                key={result.id}
+                onClick={() => onSelected(result)}
+              >
+                <img
+                  className="w-12 h-12 bg-lighter"
+                  src={result.album?.images[0].url}
+                  alt={result.album?.images[0].url}
+                />
+                <div className="flex flex-col justify-start items-start">
+                  <div className="w-full leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">
+                    {result.name}
+                  </div>
+                  <div className="w-full leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
+                    {result.artists[0].name}
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Suggestions */}
+      {(loadingSuggestions || suggestions.length > 0) && (
+        <div className="flex w-full flex-col gap-3 bg-lightGlass rounded-lg p-3">
+          <div className="opacity-50 pt-1">Suggested tracks</div>
+          {loadingSuggestions && (
+            <div className="w-full flex justify-center items-center h-32">
+              <div className="spinner lg" />
+            </div>
+          )}
+          {!loadingSuggestions && suggestions.length > 0 && (
+            <div className="w-full grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))" }}>
+              {suggestions.map((track) => (
+                <button
+                  className="flex flex-col justify-start items-start gap-3 duration-300 rounded-lg p-3 hover:bg-lightGlass"
+                  key={track.id}
+                  onClick={() => onSelected(track)}
+                >
+                  <img
+                    className="w-full bg-lighter"
+                    src={track.album?.images[0].url}
+                    alt={track.album?.images[0].url}
+                  />
+                  <div className="flex flex-col w-full justify-start items-start overflow-x-hidden">
+                    <div className="w-full leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left">
+                      {track.name}
+                    </div>
+                    <div className="w-full leading-[1.3] whitespace-nowrap text-ellipsis overflow-x-hidden text-left opacity-60">
+                      {track.artists[0].name}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
