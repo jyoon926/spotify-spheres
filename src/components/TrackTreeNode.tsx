@@ -37,7 +37,7 @@ export default function TrackTreeNode({
   const { getRecommendations, reload } = useSpotify(spotifyApi);
   const [position, setPosition] = useState<NodePosition>({ x: 0, y: 0, angle: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
-  const { currentTrack, isPlaying: _isPlaying, playAudio, pauseAudio } = useAudioPlayer();
+  const { currentTrack, isPlaying: _isPlaying, playAudio, pauseAudio, checkSubTree } = useAudioPlayer();
 
   useEffect(() => {
     // Convert angle to radians and calculate position
@@ -70,14 +70,14 @@ export default function TrackTreeNode({
 
   const handleReload = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (checkSubTree(node)) pauseAudio();
     await reload(node);
-    if (isPlaying) pauseAudio();
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (checkSubTree(node)) pauseAudio();
     deleteNode(node);
-    if (isPlaying) pauseAudio();
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -112,7 +112,7 @@ export default function TrackTreeNode({
         return (
           <div
             key={`line-${index}`}
-            className="absolute origin-left border-t-2 backdrop-blur"
+            className="absolute origin-left border-t-2 border-dashed backdrop-blur"
             style={{
               width: lineLength,
               transform: `rotate(${lineAngle}deg)`,

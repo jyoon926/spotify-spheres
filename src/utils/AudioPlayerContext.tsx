@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useRef } from "react";
 import { MdPause, MdPlayArrow } from "react-icons/md";
+import { TreeNode } from "./Types";
 
 type AudioPlayerContextType = {
   currentTrack: SpotifyApi.TrackObjectFull | null;
   isPlaying: boolean;
   playAudio: (track: SpotifyApi.TrackObjectFull) => void;
   pauseAudio: () => void;
+  checkSubTree: (node: TreeNode<SpotifyApi.TrackObjectFull>) => boolean;
 };
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | undefined>(undefined);
@@ -36,8 +38,18 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  const checkSubTree = (node: TreeNode<SpotifyApi.TrackObjectFull>): boolean => {
+    if (node.value === currentTrack) return true;
+    for (const child of node.children) {
+      if (checkSubTree(child)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   return (
-    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio }}>
+    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio, checkSubTree }}>
       {children}
       <div className={`fixed w-full sm:w-auto right-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}>
         <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-lightGlass rounded-lg backdrop-blur-lg">
