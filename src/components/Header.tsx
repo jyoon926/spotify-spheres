@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <>
       {isAuthenticated ? (
-        <div className="fixed top-0 right-0 w-full h-full flex flex-col justify-start items-start p-2 z-50 gap-2 pointer-events-none">
+        <div className="fixed top-0 right-0 w-full h-full flex flex-col justify-start items-start p-3 z-50 gap-2 pointer-events-none">
           <div className="w-full flex flex-row justify-between items-center px-4 py-3 bg-lightGlass backdrop-blur-md rounded-lg pointer-events-auto">
             <div className="flex flex-row gap-5 items-center">
               <Link className="flex flex-row items-center gap-2 text-lg" to="/">
@@ -55,7 +55,10 @@ export default function Header() {
                   <button className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lightGlass rounded-full p-2">
                     <MdHelpOutline className="text-2xl" /> Help
                   </button>
-                  <Link className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lightGlass rounded-full p-2" to="/about">
+                  <Link
+                    className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lightGlass rounded-full p-2"
+                    to="/about"
+                  >
                     <MdInfoOutline className="text-2xl" /> About
                   </Link>
                 </div>

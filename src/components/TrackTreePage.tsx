@@ -28,7 +28,7 @@ export default function TrackTreePage({ spotifyApi }: Props) {
                   <TransformComponent>
                     <TrackTree spotifyApi={spotifyApi} />
                   </TransformComponent>
-                  <div className="fixed bottom-2 left-1/2 -translate-x-1/2">
+                  <div className="fixed bottom-3 left-1/2 -translate-x-1/2">
                     <button
                       onClick={() => centerView(1)}
                       className="button light transition-all duration-200 ease-in-out"
