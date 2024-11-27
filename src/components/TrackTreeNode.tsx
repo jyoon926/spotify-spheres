@@ -133,7 +133,7 @@ export default function TrackTreeNode({
       >
         <div className="flex flex-col gap-3">
           <img
-            className="w-36 h-36 bg-lighter pointer-events-none"
+            className="w-36 h-36 bg-lighter rounded pointer-events-none"
             src={node.value.album?.images[0].url}
             alt={node.value.album?.images[0].url}
           />
@@ -146,7 +146,7 @@ export default function TrackTreeNode({
         </div>
         <div className="flex flex-col gap-2">
           <button
-            className={`p-1.5 rounded-full duration-300 bg-lighter ${
+            className={`p-1 rounded-full duration-300 bg-lighter ${
               isPlaying ? "bg-light" : "hover:bg-light"
             }`}
             onClick={handlePlay}
@@ -155,7 +155,7 @@ export default function TrackTreeNode({
             {isPlaying ? <MdPause /> : <MdPlayArrow />}
           </button>
           <button
-            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
+            className="p-1 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleGetRecommendations}
             onDoubleClick={handleClick}
           >
@@ -163,7 +163,7 @@ export default function TrackTreeNode({
           </button>
           {node.selected ? (
             <button
-              className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
+              className="p-1 rounded-full duration-300 bg-lighter hover:bg-light"
               onClick={handleDeselect}
               onDoubleClick={handleClick}
             >
@@ -171,7 +171,7 @@ export default function TrackTreeNode({
             </button>
           ) : (
             <button
-              className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
+              className="p-1 rounded-full duration-300 bg-lighter hover:bg-light"
               onClick={handleSelect}
               onDoubleClick={handleClick}
             >
@@ -179,14 +179,14 @@ export default function TrackTreeNode({
             </button>
           )}
           <button
-            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
+            className="p-1 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleReload}
             onDoubleClick={handleClick}
           >
             <MdRefresh />
           </button>
           <button
-            className="p-1.5 rounded-full duration-300 bg-lighter hover:bg-light"
+            className="p-1 rounded-full duration-300 bg-lighter hover:bg-light"
             onClick={handleDelete}
             onDoubleClick={handleClick}
           >

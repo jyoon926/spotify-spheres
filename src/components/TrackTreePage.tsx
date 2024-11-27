@@ -28,10 +28,10 @@ export default function TrackTreePage({ spotifyApi }: Props) {
                   <TransformComponent>
                     <TrackTree spotifyApi={spotifyApi} />
                   </TransformComponent>
-                  <div className="fixed top-3 left-1/2 -translate-x-1/2">
+                  <div className="fixed bottom-2 left-1/2 -translate-x-1/2">
                     <button
                       onClick={() => centerView(1)}
-                      className="button light sm transition-all duration-200 ease-in-out"
+                      className="button light transition-all duration-200 ease-in-out"
                     >
                       Reset view
                     </button>
@@ -43,7 +43,7 @@ export default function TrackTreePage({ spotifyApi }: Props) {
           <TrackList spotifyApi={spotifyApi} />
         </>
       ) : (
-        <div className="w-full flex justify-center items-center px-3 pt-56 pb-32">
+        <div className="w-full flex justify-center items-center px-3 py-52">
           <div className="w-full max-w-[800px]">
             <SearchTracks spotifyApi={spotifyApi} onSelected={handleSelectInitial} />
           </div>

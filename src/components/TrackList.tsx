@@ -38,7 +38,7 @@ export default function TrackList({ spotifyApi }: Props) {
   };
 
   return (
-    <div className="absolute top-12 left-0 p-3 w-full sm:w-auto pointer-events-none">
+    <div className="absolute top-[4rem] left-[4rem] p-3 w-full sm:w-auto pointer-events-none">
       <div
         className={`w-full sm:w-96 p-3 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg duration-300 pointer-events-auto ${
           trackList.length === 0 && "-translate-x-[110%] opacity-0"
@@ -70,7 +70,7 @@ export default function TrackList({ spotifyApi }: Props) {
             <div className="flex flex-row justify-start items-center gap-3" key={index}>
               <a className="w-12" href={track.album?.external_urls.spotify} target="_blank">
                 <img
-                  className="w-12 h-12 bg-lighter"
+                  className="w-12 h-12 bg-lighter rounded"
                   src={track.album?.images[0].url}
                   alt={track.album?.images[0].url}
                 />

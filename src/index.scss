@@ -55,11 +55,11 @@ body {
 }
 
 .link {
-  transition-duration: 0.3s;
+  transition-duration: 300ms;
   opacity: 1;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.6;
   }
 }
 

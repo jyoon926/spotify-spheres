@@ -22,24 +22,24 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
     async (node: TreeNode<SpotifyApi.TrackObjectFull>, limit: number) => {
       try {
         const seedTracks = getSeedTracks(node);
-        const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
-        const count = features.audio_features.length;
-        const calculateAverage = (key: string) =>
-          features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count;
-        const averageFeatures = {
-          acousticness: calculateAverage("acousticness"),
-          danceability: calculateAverage("danceability"),
-          energy: calculateAverage("energy"),
-          instrumentalness: calculateAverage("instrumentalness"),
-          key: calculateAverage("key"),
-          liveness: calculateAverage("liveness"),
-          loudness: calculateAverage("loudness"),
-          mode: calculateAverage("mode"),
-          speechiness: calculateAverage("speechiness"),
-          tempo: calculateAverage("tempo"),
-          time_signature: calculateAverage("time_signature"),
-          valence: calculateAverage("valence"),
-        };
+        // const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
+        // const count = features.audio_features.length;
+        // const calculateAverage = (key: string) =>
+        //   features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count;
+        // const averageFeatures = {
+        //   acousticness: calculateAverage("acousticness"),
+        //   danceability: calculateAverage("danceability"),
+        //   energy: calculateAverage("energy"),
+        //   instrumentalness: calculateAverage("instrumentalness"),
+        //   key: calculateAverage("key"),
+        //   liveness: calculateAverage("liveness"),
+        //   loudness: calculateAverage("loudness"),
+        //   mode: calculateAverage("mode"),
+        //   speechiness: calculateAverage("speechiness"),
+        //   tempo: calculateAverage("tempo"),
+        //   time_signature: calculateAverage("time_signature"),
+        //   valence: calculateAverage("valence"),
+        // };
         const uniqueTracks: SpotifyApi.TrackObjectFull[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));
         const maxAttempts = 2;
@@ -53,10 +53,10 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
               .map((t) => t.id)
               .slice(0, 5)
               .join(","),
-            ...(node.parent && {
-              target_danceability: averageFeatures.danceability,
-              target_energy: averageFeatures.energy,
-            }),
+              // ...(node.parent && {
+              //   target_danceability: averageFeatures.danceability,
+              //   target_energy: averageFeatures.energy,
+              // }),
           });
 
           for (const track of response.tracks) {

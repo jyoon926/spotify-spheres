@@ -110,12 +110,12 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
           <div className="flex flex-col w-full">
             {results.map((result) => (
               <button
-                className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg px-3 py-2 hover:bg-lightGlass"
+                className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg p-2 hover:bg-lightGlass"
                 key={result.id}
                 onClick={() => onSelected(result)}
               >
                 <img
-                  className="w-12 h-12 bg-lighter"
+                  className="w-12 h-12 bg-lighter rounded"
                   src={result.album?.images[0].url}
                   alt={result.album?.images[0].url}
                 />
@@ -151,7 +151,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
                   onClick={() => onSelected(track)}
                 >
                   <img
-                    className="w-full bg-lighter"
+                    className="w-full bg-lighter rounded"
                     src={track.album?.images[0].url}
                     alt={track.album?.images[0].url}
                   />

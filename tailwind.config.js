@@ -13,7 +13,14 @@ export default {
         lightGlass: "rgba(var(--gray), 0.6)",
       },
       borderColor: {
-        DEFAULT: "rgba(var(--gray), 1)",
+        DEFAULT: "rgba(var(--foreground), 0.1)",
+      },
+      borderRadius: {
+        sm: "0.25rem",
+        DEFAULT: "0.375rem",
+        md: "0.5rem",
+        lg: "0.75rem",
+        xl: "1.7rem",
       },
     },
   },

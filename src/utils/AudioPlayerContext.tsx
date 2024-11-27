@@ -58,7 +58,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
           <div className="flex flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
               <a href={currentTrack.album.external_urls.spotify} target="_blank">
-                <img className="w-12 h-12 bg-lighter" src={currentTrack.album.images[0].url} />
+                <img className="w-12 h-12 bg-lighter rounded" src={currentTrack.album.images[0].url} />
               </a>
             ) : (
               <div className="w-12 h-12 bg-lighter" />
