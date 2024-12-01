@@ -38,7 +38,7 @@ export default function TrackList({ spotifyApi }: Props) {
   };
 
   return (
-    <div className="absolute top-3 left-20 w-full sm:w-auto pointer-events-none">
+    <div className="absolute top-0 left-0 p-3 pl-20 w-full pointer-events-none">
       <div
         className={`w-full sm:w-96 p-4 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg duration-300 pointer-events-auto ${trackList.length === 0 && "-translate-x-[110%] opacity-0"
           }`}
