@@ -87,7 +87,7 @@ export default function Header() {
                     <FaSpotify className="text-2xl" /> Spotify Spheres
                   </Link>
                 </div>
-                <div className="w-full px-1 py-2">
+                <div className="w-full py-2">
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -98,7 +98,7 @@ export default function Header() {
                     <GoGlobe className="text-2xl" /> Your Spheres
                   </Link>
                 </div>
-                <div className="w-full px-1 py-2">
+                <div className="w-full py-2">
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -109,7 +109,7 @@ export default function Header() {
                     <MdList className="text-2xl" /> Your Playlists
                   </Link>
                 </div>
-                <div className="w-full px-1 py-2">
+                <div className="w-full py-2">
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
