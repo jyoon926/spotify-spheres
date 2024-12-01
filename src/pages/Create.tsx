@@ -20,7 +20,7 @@ export default function Create() {
   }
 
   return (
-    <div className="absolute inset-0 p-5 sm:pl-20 flex justify-center items-center">
+    <div className="absolute inset-0 p-6 sm:pl-20 flex justify-center items-center">
       <div className="overflow-hidden">
         <SearchTracks spotifyApi={spotifyApi!} onSelected={handleSelectInitial} />
       </div>

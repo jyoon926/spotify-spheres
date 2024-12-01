@@ -19,13 +19,13 @@ export default function Spheres() {
   }, []);
 
   return (
-    <div className="w-full p-3 sm:pl-20">
+    <div className="w-full p-6 sm:p-3 sm:pl-20">
       <div className="w-full sm:px-10 py-28 sm:py-16 flex flex-col gap-6">
         <div className="text-4xl">Your Spheres</div>
         {spheres.length === 0 ? (
           <div className="spinner lg" />
         ) : (
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row flex-wrap gap-3">
             {spheres.map((sphere) => (
               <Link className="button light p-5 flex flex-col gap-3 rounded-lg w-96" to={`/sphere/${sphere.id}`} key={sphere.id}>
                 <div className="text-xl">{sphere.title}</div>

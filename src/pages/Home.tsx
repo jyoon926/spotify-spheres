@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div>
       {isAuthenticated ? (
-        <div className="absolute inset-0 w-full p-3 sm:pl-20 flex justify-center items-center">
+        <div className="absolute inset-0 w-full p-6 sm:pl-20 flex justify-center items-center">
           <div className="flex flex-col justify-start items-center gap-10 text-center">
             <div className="text-4xl">Welcome to Spotify Spheres!</div>
             <div className="flex flex-row flex-wrap justify-center gap-3 text-lg">
