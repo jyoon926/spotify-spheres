@@ -45,7 +45,7 @@ export default function TrackList({ spotifyApi }: Props) {
       >
         <div className="text-xl mb-2">{sphere?.title}</div>
         <div className="opacity-60 mb-4">{sphere?.description}</div>
-        <div className="w-full border-t-2 mb-4"></div>
+        <div className="w-full border-t mb-4"></div>
         <div className="flex flex-row justify-between items-center gap-3">
           <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
             <MdArrowDropDown
