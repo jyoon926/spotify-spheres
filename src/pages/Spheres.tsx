@@ -40,7 +40,7 @@ export default function Spheres() {
         ) : (
           <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(24rem, 1fr))' }}>
             {spheres.map((sphere) => (
-              <Link className="bg-lightGlass hover:bg-light p-5 flex flex-col gap-4 rounded-lg" to={`/sphere/${sphere.id}`} key={sphere.id}>
+              <Link className="bg-lightGlass hover:bg-lighter duration-300 p-5 flex flex-col gap-4 rounded-lg" to={`/sphere/${sphere.id}`} key={sphere.id}>
                 <div className="text-xl leading-tight">{sphere.title}</div>
                 <div className="w-full border-t" />
                 <div className="overflow-hidden whitespace-nowrap text-ellipsis leading-tight">{sphere.description}</div>
