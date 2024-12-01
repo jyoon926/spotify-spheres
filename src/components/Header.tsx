@@ -27,7 +27,7 @@ export default function Header() {
                 <GoGlobe className="text-2xl" /> Your Spheres
               </Link>
             </div>
-            <div className="w-full px-1 py-2">
+            {/* <div className="w-full py-2">
               <div className="border-t"></div>
             </div>
             <div className="flex flex-col gap-1">
@@ -37,8 +37,8 @@ export default function Header() {
               <Link to="/playlists" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <MdList className="text-2xl" /> Your Playlists
               </Link>
-            </div>
-            <div className="w-full px-1 py-2">
+            </div> */}
+            <div className="w-full py-2">
               <div className="border-t"></div>
             </div>
             <div className="flex flex-col gap-1">
@@ -80,10 +80,10 @@ export default function Header() {
             </button>
           </div>
           <div className="h-full p-2 bg-lightGlass backdrop-blur-md rounded-lg pointer-events-auto hidden sm:flex">
-            <div className="h-full flex flex-col items-start justify-between duration-300 w-10 hover:w-64 overflow-hidden">
+            <div className="h-full flex flex-col items-start justify-between duration-300 w-10 hover:w-72 overflow-hidden">
               <div>
                 <div className="flex flex-col gap-1">
-                  <Link to="/" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2 text-lg font-bold">
+                  <Link to="/" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2 text-lg font-bold">
                     <FaSpotify className="text-2xl" /> Spotify Spheres
                   </Link>
                 </div>
@@ -91,33 +91,33 @@ export default function Header() {
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Link to="/create" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
+                  <Link to="/create" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
                     <MdAdd className="text-2xl" /> Create a new Sphere
                   </Link>
-                  <Link to="/spheres" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
+                  <Link to="/spheres" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
                     <GoGlobe className="text-2xl" /> Your Spheres
                   </Link>
                 </div>
-                <div className="w-full py-2">
+                {/* <div className="w-full py-2">
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Link to="/playlist-creator" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
+                  <Link to="/playlist-creator" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
                     <MdOutlineWidgets className="text-2xl" /> Simple Playlist Creator
                   </Link>
-                  <Link to="/playlists" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
+                  <Link to="/playlists" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
                     <MdList className="text-2xl" /> Your Playlists
                   </Link>
-                </div>
+                </div> */}
                 <div className="w-full py-2">
                   <div className="border-t"></div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Link to="/help" className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
+                  <Link to="/help" className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2">
                     <MdHelpOutline className="text-2xl" /> Help
                   </Link>
                   <Link
-                    className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2"
+                    className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2"
                     to="/about"
                   >
                     <MdInfoOutline className="text-2xl" /> About
@@ -126,7 +126,7 @@ export default function Header() {
               </div>
               <div>
                 <div className="flex flex-col gap-1">
-                  <button className="w-64 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2" onClick={logout}>
+                  <button className="w-72 flex flex-row gap-4 leading-[0] items-center duration-300 hover:bg-lighter rounded-full p-2" onClick={logout}>
                     <a href={user?.external_urls.spotify} target="_blank">
                       <img className="h-6 w-6 rounded-full" src={user?.images![0].url} alt="" />
                     </a> Log out
