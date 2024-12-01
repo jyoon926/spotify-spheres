@@ -7,18 +7,23 @@ import { useState } from "react";
 
 export default function Header() {
   const { user, login, logout, isAuthenticated } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    setShowMenu(false);
+    logout();
+  }
 
   return (
     <>
-      <div className={`fixed inset-0 z-30 bg-lightGlass backdrop-blur-lg duration-300 p-3 pt-20 ${isMenuOpen ? "" : "opacity-0 pointer-events-none"} sm:hidden`}>
+      <div className={`fixed inset-0 z-30 bg-lightGlass backdrop-blur-lg duration-300 p-3 pt-20 ${showMenu ? "" : "opacity-0 pointer-events-none"} sm:hidden`}>
         <div className="w-full h-full flex flex-col items-start justify-between">
           <div className="w-full">
             <div className="flex flex-col gap-1">
-              <Link to="/create" className="flex flex-row gap-4 leading-[0] items-center p-2">
+              <Link to="/create" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <MdAdd className="text-2xl" /> Create a new Sphere
               </Link>
-              <Link to="/spheres" className="flex flex-row gap-4 leading-[0] items-center p-2">
+              <Link to="/spheres" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <GoGlobe className="text-2xl" /> Your Spheres
               </Link>
             </div>
@@ -26,10 +31,10 @@ export default function Header() {
               <div className="border-t"></div>
             </div>
             <div className="flex flex-col gap-1">
-              <Link to="/playlist-creator" className="flex flex-row gap-4 leading-[0] items-center p-2">
+              <Link to="/playlist-creator" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <MdOutlineWidgets className="text-2xl" /> Simple Playlist Creator
               </Link>
-              <Link to="/playlists" className="flex flex-row gap-4 leading-[0] items-center p-2">
+              <Link to="/playlists" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <MdList className="text-2xl" /> Your Playlists
               </Link>
             </div>
@@ -37,12 +42,12 @@ export default function Header() {
               <div className="border-t"></div>
             </div>
             <div className="flex flex-col gap-1">
-              <Link to="/help" className="flex flex-row gap-4 leading-[0] items-center p-2">
+              <Link to="/help" className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={() => setShowMenu(false)}>
                 <MdHelpOutline className="text-2xl" /> Help
               </Link>
               <Link
                 className="flex flex-row gap-4 leading-[0] items-center p-2"
-                to="/about"
+                to="/about" onClick={() => setShowMenu(false)}
               >
                 <MdInfoOutline className="text-2xl" /> About
               </Link>
@@ -50,7 +55,7 @@ export default function Header() {
           </div>
           <div>
             <div className="flex flex-col gap-1">
-              <button className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={logout}>
+              <button className="flex flex-row gap-4 leading-[0] items-center p-2" onClick={handleLogout}>
                 <a href={user?.external_urls.spotify} target="_blank">
                   <img className="h-6 w-6 rounded-full" src={user?.images![0].url} alt="" />
                 </a> Log out
@@ -68,7 +73,7 @@ export default function Header() {
                 Spotify Spheres
               </Link>
             </div>
-            <button className="py-1 flex flex-col gap-1" onClick={() => setIsMenuOpen(prev => !prev)}>
+            <button className="py-1 flex flex-col gap-1" onClick={() => setShowMenu(prev => !prev)}>
               <div className="w-8 border-t border-foreground"></div>
               <div className="w-8 border-t border-foreground"></div>
               <div className="w-8 border-t border-foreground"></div>

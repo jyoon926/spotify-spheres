@@ -19,8 +19,8 @@ export default function Spheres() {
   }, []);
 
   return (
-    <div className="w-full p-3 pl-20">
-      <div className="w-full sm:px-10 py-16 flex flex-col gap-6">
+    <div className="w-full p-3 sm:pl-20">
+      <div className="w-full sm:px-10 py-28 sm:py-16 flex flex-col gap-6">
         <div className="text-4xl">Your Spheres</div>
         {spheres.length === 0 ? (
           <div className="spinner lg" />

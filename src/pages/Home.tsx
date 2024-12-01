@@ -9,12 +9,12 @@ export default function Home() {
   return (
     <div>
       {isAuthenticated ? (
-        <div className="absolute inset-0 w-full p-3 pl-20 flex justify-center items-center">
+        <div className="absolute inset-0 w-full p-3 sm:pl-20 flex justify-center items-center">
           <div className="flex flex-col justify-start items-center gap-10 text-center">
             <div className="text-4xl">Welcome to Spotify Spheres!</div>
             <div className="flex flex-row flex-wrap justify-center gap-3 text-lg">
-              <Link to="/create" className="button leading-snug flex justify-center items-center gap-3 p-4"><MdAdd className="text-2xl" /> Create a new Sphere</Link>
-              <Link to="/spheres" className="button light leading-snug flex justify-center items-center gap-3 p-4"><GoGlobe className="text-2xl" /> Manage your existing Spheres</Link>
+              <Link to="/create" className="button leading-snug flex justify-center items-center gap-2 px-4"><MdAdd className="text-2xl" /> Create a new Sphere</Link>
+              <Link to="/spheres" className="button light leading-snug flex justify-center items-center gap-2 px-4"><GoGlobe className="text-2xl" /> Manage your existing Spheres</Link>
             </div>
           </div>
         </div>

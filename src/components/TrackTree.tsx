@@ -42,7 +42,7 @@ export default function TrackTree({ spotifyApi }: Props) {
         setShiftX(((right + left) / 2 - x) * -1);
         setShiftY(((top + bottom) / 2 - y) * -1);
       }
-    }, 10);
+    }, 100);
   }, [rootNode]);
 
   useEffect(() => {
