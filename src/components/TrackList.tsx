@@ -63,7 +63,7 @@ export default function TrackList({ spotifyApi }: Props) {
                 opacity: collapsed ? 0 : 1,
                 marginTop: collapsed ? 0 : "0.75rem",
               }}
-              className="flex flex-col gap-3 overflow-y-auto scrollbar-slim transition-all duration-300 ease-in-out"
+              className="flex flex-col gap-3 overflow-y-auto scrollbar-slim transition-all duration-300 ease-in-out pr-2"
             >
               {trackList.map((track, index) => (
                 <div className="flex flex-row justify-start items-center gap-3" key={index}>

@@ -73,6 +73,7 @@ body {
     background-color: rgba(var(--gray), 0.6);
     transition-duration: 0.3ms;
     cursor: pointer;
+    border-radius: 100vw;
 
     &:hover {
       background-color: rgba(var(--gray), 0.8);

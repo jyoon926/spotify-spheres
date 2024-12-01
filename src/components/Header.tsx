@@ -1,7 +1,7 @@
 import { FaSpotify } from "react-icons/fa";
 import { useAuth } from "../utils/AuthContext";
 import { Link } from "react-router-dom";
-import { MdAdd, MdHelpOutline, MdInfoOutline, MdList, MdOutlineWidgets } from "react-icons/md";
+import { MdAdd, MdHelpOutline, MdInfoOutline } from "react-icons/md";
 import { GoGlobe } from "react-icons/go";
 import { useState } from "react";
 
