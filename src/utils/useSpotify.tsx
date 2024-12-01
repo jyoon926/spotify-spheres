@@ -48,15 +48,14 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
         for (let attempts = 0; attempts < maxAttempts && uniqueTracks.length < limit; attempts++) {
           const response = await spotifyApi.getRecommendations({
             limit: batchSize,
-            market: user!.country,
             seed_tracks: seedTracks
               .map((t) => t.id)
               .slice(0, 5)
               .join(","),
-              // ...(node.parent && {
-              //   target_danceability: averageFeatures.danceability,
-              //   target_energy: averageFeatures.energy,
-              // }),
+            // ...(node.parent && {
+            //   target_danceability: averageFeatures.danceability,
+            //   target_energy: averageFeatures.energy,
+            // }),
           });
 
           for (const track of response.tracks) {

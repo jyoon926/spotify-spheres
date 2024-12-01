@@ -1,28 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { TrackTreeContextType, TreeNode } from "./Types";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { Sphere, TrackTreeContextType, TreeNode } from "./Types";
+import { updateSphere } from "./FirestoreService";
+import { useAuth } from "./AuthContext";
 
 const TrackTreeContext = createContext<TrackTreeContextType | undefined>(undefined);
 
 export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   const [rootNode, setRootNode] = useState<TreeNode<SpotifyApi.TrackObjectFull> | null>(null);
+  const { user } = useAuth();
+  const [sphere, setSphere] = useState<Sphere | null>(null);
 
   const generateId = useCallback((): string => {
     return Math.random().toString(36).slice(2);
   }, []);
 
   const initializeTree = useCallback(
-    (track: SpotifyApi.TrackObjectFull) => {
-      const newRootNode: TreeNode<SpotifyApi.TrackObjectFull> = {
-        id: generateId(),
-        value: track,
-        children: [],
-        parent: null,
-        selected: false,
-      };
-      setRootNode(newRootNode);
+    (data: Sphere) => {
+      setRootNode(data.rootNode);
+      setSphere(data);
     },
-    [generateId]
+    []
   );
 
   const findNodeById = useCallback(
@@ -157,10 +155,15 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
     [rootNode, generateId, updateNode]
   );
 
+  useEffect(() => {
+    if (user && sphere && rootNode) updateSphere(user!.id, sphere!, rootNode!);
+  }, [rootNode]);
+
   return (
     <TrackTreeContext.Provider
       value={{
         rootNode,
+        sphere,
         updateNode,
         addChildrenToNode,
         initializeTree,

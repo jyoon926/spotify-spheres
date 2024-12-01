@@ -1,34 +1,23 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
-import TrackTreePage from "../components/TrackTreePage";
-import { useEffect, useState } from "react";
-import SpotifyWebApi from "spotify-web-api-js";
-import { AudioPlayerProvider } from "../utils/AudioPlayerContext";
-import { TrackTreeProvider } from "../utils/TrackTreeContext";
+import { MdAdd } from "react-icons/md";
+import { GoGlobe } from "react-icons/go";
 
 export default function Home() {
-  const { login, isAuthenticated, loading, token } = useAuth();
-  const [spotifyApi, setSpotifyApi] = useState<SpotifyWebApi.SpotifyWebApiJs | null>(null);
-
-  useEffect(() => {
-    if (isAuthenticated && token) {
-      const spotify = new SpotifyWebApi();
-      spotify.setAccessToken(token);
-      setSpotifyApi(spotify);
-    } else {
-      setSpotifyApi(null);
-    }
-  }, [isAuthenticated, token]);
-
-  if (loading) return null;
+  const { login, isAuthenticated } = useAuth();
 
   return (
     <div>
-      {spotifyApi ? (
-        <TrackTreeProvider>
-          <AudioPlayerProvider>
-            <TrackTreePage spotifyApi={spotifyApi} />
-          </AudioPlayerProvider>
-        </TrackTreeProvider>
+      {isAuthenticated ? (
+        <div className="absolute inset-0 w-full p-3 pl-20 flex justify-center items-center">
+          <div className="flex flex-col justify-start items-center gap-10 text-center">
+            <div className="text-4xl">Welcome to Spotify Spheres!</div>
+            <div className="flex flex-row flex-wrap justify-center gap-3 text-lg">
+              <Link to="/create" className="button leading-snug flex justify-center items-center gap-3 p-4"><MdAdd className="text-2xl" /> Create a new Sphere</Link>
+              <Link to="/spheres" className="button light leading-snug flex justify-center items-center gap-3 p-4"><GoGlobe className="text-2xl" /> Manage your existing Spheres</Link>
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="absolute inset-0 flex flex-col justify-center items-center gap-10 p-5">
           <h1 className="max-w-[700px] text-center text-4xl sm:text-5xl md:text-6xl">

@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function TrackList({ spotifyApi }: Props) {
-  const { rootNode, getTrackList } = useTrackTree();
+  const { sphere, rootNode, getTrackList } = useTrackTree();
   const [trackList, setTrackList] = useState<SpotifyApi.TrackObjectFull[]>([]);
   const { createPlaylist } = useSpotify(spotifyApi);
   const [collapsed, setCollapsed] = useState(true);
@@ -38,20 +38,21 @@ export default function TrackList({ spotifyApi }: Props) {
   };
 
   return (
-    <div className="absolute top-[4rem] left-[4rem] p-3 w-full sm:w-auto pointer-events-none">
+    <div className="absolute top-3 left-20 w-full sm:w-auto pointer-events-none">
       <div
-        className={`w-full sm:w-96 p-3 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg duration-300 pointer-events-auto ${
-          trackList.length === 0 && "-translate-x-[110%] opacity-0"
-        }`}
+        className={`w-full sm:w-96 p-4 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg duration-300 pointer-events-auto ${trackList.length === 0 && "-translate-x-[110%] opacity-0"
+          }`}
       >
+        <div className="text-xl mb-2">{sphere?.title}</div>
+        <div className="opacity-60 mb-4">{sphere?.description}</div>
+        <div className="w-full border-t-2 mb-4"></div>
         <div className="flex flex-row justify-between items-center gap-3">
           <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
-            <MdArrowDropDown 
-              className={`text-2xl transform transition-transform duration-300 ${
-                collapsed ? "-rotate-90" : "rotate-0"
-              }`} 
+            <MdArrowDropDown
+              className={`text-2xl transform transition-transform duration-300 ${collapsed ? "-rotate-90" : "rotate-0"
+                }`}
             />
-            <div className="font-bold">Track List ({trackList.length})</div>
+            <div className="font-bold leading-[0]">Track List ({trackList.length})</div>
           </button>
           <button className="button light sm" onClick={handleCreatePlaylist}>
             Create playlist
@@ -62,7 +63,7 @@ export default function TrackList({ spotifyApi }: Props) {
           style={{
             maxHeight: collapsed ? "0px" : `${contentHeight}px`,
             opacity: collapsed ? 0 : 1,
-            marginTop: collapsed ? 0 : "0.75rem"
+            marginTop: collapsed ? 0 : "0.75rem",
           }}
           className="flex flex-col gap-3 overflow-y-auto scrollbar-slim transition-all duration-300 ease-in-out"
         >

@@ -12,47 +12,46 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
   const [results, setResults] = useState<SpotifyApi.TrackObjectFull[]>([]);
   const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
   const [debouncedQuery] = useDebounce(query, 300);
-  const [suggestions, setSuggestions] = useState<SpotifyApi.TrackObjectFull[]>([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
+  // const [suggestions, setSuggestions] = useState<SpotifyApi.TrackObjectFull[]>([]);
+  // const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      setLoadingSuggestions(true);
-      try {
-        const topTracksShort = await spotifyApi.getMyTopTracks({
-          limit: 3,
-          time_range: "short_term",
-        });
-        const topTracksMedium = await spotifyApi.getMyTopTracks({
-          limit: 3,
-          time_range: "medium_term",
-        });
-        const topTracksLong = await spotifyApi.getMyTopTracks({
-          limit: 3,
-          time_range: "long_term",
-        });
-        const recentTracksResponse = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 3 });
-        const combinedTracks = [
-          ...topTracksShort.items,
-          ...topTracksMedium.items,
-          ...topTracksLong.items,
-          ...recentTracksResponse.items.map((item) => item.track as unknown as SpotifyApi.TrackObjectFull),
-        ];
-        const uniqueTracks = combinedTracks.filter(
-          (track, index, self) => index === self.findIndex((t) => t.id === track.id)
-        );
-        setSuggestions(uniqueTracks);
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
-      } finally {
-        setLoadingSuggestions(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSuggestions = async () => {
+  //     setLoadingSuggestions(true);
+  //     try {
+  //       const topTracksShort = await spotifyApi.getMyTopTracks({
+  //         limit: 3,
+  //         time_range: "short_term",
+  //       });
+  //       const topTracksMedium = await spotifyApi.getMyTopTracks({
+  //         limit: 3,
+  //         time_range: "medium_term",
+  //       });
+  //       const topTracksLong = await spotifyApi.getMyTopTracks({
+  //         limit: 3,
+  //         time_range: "long_term",
+  //       });
+  //       const recentTracksResponse = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 3 });
+  //       const combinedTracks = [
+  //         ...topTracksShort.items,
+  //         ...topTracksMedium.items,
+  //         ...topTracksLong.items,
+  //         ...recentTracksResponse.items.map((item) => item.track as unknown as SpotifyApi.TrackObjectFull),
+  //       ];
+  //       const uniqueTracks = combinedTracks.filter(
+  //         (track, index, self) => index === self.findIndex((t) => t.id === track.id)
+  //       );
+  //       setSuggestions(uniqueTracks);
+  //     } catch (error) {
+  //       console.error("Error fetching suggestions:", error);
+  //     } finally {
+  //       setLoadingSuggestions(false);
+  //     }
+  //   };
 
-    fetchSuggestions();
-  }, [spotifyApi]);
+  //   fetchSuggestions();
+  // }, [spotifyApi]);
 
-  // Debounce search to avoid too many API calls
   const searchTracks = useCallback(
     (searchQuery: string) => {
       if (!searchQuery.trim()) {
@@ -134,7 +133,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
       </div>
 
       {/* Suggestions */}
-      {(loadingSuggestions || suggestions.length > 0) && (
+      {/* {(loadingSuggestions || suggestions.length > 0) && (
         <div className="flex w-full flex-col gap-3 bg-lightGlass rounded-lg p-3">
           <div className="opacity-50 pt-1">Suggested tracks</div>
           {loadingSuggestions && (
@@ -168,7 +167,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
             </div>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 }
