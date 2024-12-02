@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getCountFromServer, getDoc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "./FirebaseConfig";
 import { Sphere, TreeNode } from "./Types";
 
@@ -42,6 +42,15 @@ export const fetchSpheres = async (userId: string) => {
     console.error("Error fetching documents: ", error);
   }
 };
+
+export const fetchSpheresCount = async (userId: string) => {
+  try {
+    const snapshot = await getCountFromServer(collection(db, "users", userId, "spheres"));
+    return snapshot.data().count;
+  } catch (error) {
+    console.error('Error getting document count:', error);
+  }
+}
 
 export const createSphere = async (userId: string, rootNode: TreeNode<SpotifyApi.TrackObjectFull>) => {
   try {

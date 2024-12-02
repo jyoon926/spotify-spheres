@@ -138,3 +138,27 @@ input {
 .clip {
   clip-path: inset(0% 0% 100% 0%);
 }
+
+.placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.placeholder:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6rem;
+  background: linear-gradient(90deg, transparent, rgba(var(--foreground), 0.05), transparent);
+  animation: gradient 1s infinite ease-in-out;
+}
+
+@keyframes gradient {
+  from {
+    left: -6rem;
+  } to {
+    left: 100%;
+  }
+}

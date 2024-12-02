@@ -90,14 +90,14 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-5 w-full justify-start items-start">
-      <p className="text-4xl">Choose a song to initialize your sphere.</p>
+    <div className="flex flex-col gap-3 w-full justify-start items-start">
+      <p className="text-2xl">Choose a song to initialize your sphere.</p>
 
       {/* Search */}
       <div className="flex flex-col gap-3 w-full justify-start items-start">
         <div className="w-full flex flex-row items-center gap-3">
           <input
-            className="w-full max-w-[300px]"
+            className="w-full"
             type="text"
             placeholder="Search..."
             value={query}
