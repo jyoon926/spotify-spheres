@@ -112,7 +112,7 @@ export default function TrackTreeNode({
         return (
           <div
             key={`line-${index}`}
-            className="absolute origin-left border-t-2 border-dashed backdrop-blur"
+            className="absolute origin-left border-t-[3px] border-dotted border-light backdrop-blur"
             style={{
               width: lineLength,
               transform: `rotate(${lineAngle}deg)`,

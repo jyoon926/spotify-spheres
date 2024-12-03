@@ -77,7 +77,7 @@ export default function TrackList({ spotifyApi }: Props) {
         />
         {trackList.length > 0 && (
           <>
-            <div className="flex flex-row justify-between items-center gap-3 mt-4">
+            <div className="flex flex-row justify-between items-center gap-3 mt-2">
               <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
                 <MdArrowDropDown
                   className={`text-2xl transform transition-transform duration-300 ${
