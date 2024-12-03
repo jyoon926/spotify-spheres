@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useDebounce } from "use-debounce";
+import { convertTrack, Track } from "../utils/Types";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
-  onSelected: (track: SpotifyApi.TrackObjectFull) => void;
+  onSelected: (track: Track) => void;
 }
 
 export default function SearchTracks({ spotifyApi, onSelected }: Props) {
@@ -12,6 +13,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
   const [results, setResults] = useState<SpotifyApi.TrackObjectFull[]>([]);
   const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
   const [debouncedQuery] = useDebounce(query, 300);
+
   // const [suggestions, setSuggestions] = useState<SpotifyApi.TrackObjectFull[]>([]);
   // const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
 
@@ -111,7 +113,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
               <button
                 className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg p-2 hover:bg-lightGlass overflow-hidden"
                 key={result.id}
-                onClick={() => onSelected(result)}
+                onClick={() => onSelected(convertTrack(result))}
               >
                 <img
                   className="w-12 h-12 bg-lighter rounded"

@@ -1,23 +1,23 @@
 import React, { createContext, useContext, useState, useRef } from "react";
 import { MdPause, MdPlayArrow } from "react-icons/md";
-import { TreeNode } from "./Types";
+import { Track, TreeNode } from "./Types";
 
 type AudioPlayerContextType = {
-  currentTrack: SpotifyApi.TrackObjectFull | null;
+  currentTrack: Track | null;
   isPlaying: boolean;
-  playAudio: (track: SpotifyApi.TrackObjectFull) => void;
+  playAudio: (track: Track) => void;
   pauseAudio: () => void;
-  checkSubTree: (node: TreeNode<SpotifyApi.TrackObjectFull>) => boolean;
+  checkSubTree: (node: TreeNode<Track>) => boolean;
 };
 
 const AudioPlayerContext = createContext<AudioPlayerContextType | undefined>(undefined);
 
 export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTrack, setCurrentTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const playAudio = (track: SpotifyApi.TrackObjectFull) => {
+  const playAudio = (track: Track) => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -38,7 +38,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const checkSubTree = (node: TreeNode<SpotifyApi.TrackObjectFull>): boolean => {
+  const checkSubTree = (node: TreeNode<Track>): boolean => {
     if (node.value === currentTrack) return true;
     for (const child of node.children) {
       if (checkSubTree(child)) {
@@ -57,8 +57,8 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-lightGlass rounded-lg backdrop-blur-lg">
           <div className="flex flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
-              <a href={currentTrack.album.external_urls.spotify} target="_blank">
-                <img className="w-12 h-12 bg-lighter rounded" src={currentTrack.album.images[0].url} />
+              <a href={currentTrack.album.url} target="_blank">
+                <img className="w-12 h-12 bg-lighter rounded" src={currentTrack.album.image} />
               </a>
             ) : (
               <div className="w-12 h-12 bg-lighter" />
@@ -66,14 +66,14 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
             <div className="flex flex-col overflow-hidden">
               <a
                 className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] hover:underline"
-                href={currentTrack?.external_urls.spotify}
+                href={currentTrack?.url}
                 target="_blank"
               >
                 {currentTrack?.name}
               </a>
               <a
                 className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25] hover:underline opacity-60"
-                href={currentTrack?.artists[0].external_urls.spotify}
+                href={currentTrack?.artists[0].url}
                 target="_blank"
               >
                 {currentTrack?.artists[0].name}

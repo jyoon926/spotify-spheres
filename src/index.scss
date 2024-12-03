@@ -89,7 +89,7 @@ body {
   }
 }
 
-input {
+input:not(.unstyled) {
   background: rgba(var(--gray), 0.6);
   color: var(--foreground);
   backdrop-filter: blur(8px);
@@ -97,6 +97,10 @@ input {
   outline: none !important;
   transition-duration: 300ms;
   border-radius: 0.5rem !important;
+}
+
+.unstyled {
+  all: unset;
 }
 
 ::placeholder {
@@ -160,5 +164,21 @@ input {
     left: -6rem;
   } to {
     left: 100%;
+  }
+}
+
+.bob {
+  animation: bob 14s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0% {
+    transform: translateY(100vh) scaleX(1);
+  }
+  50% {
+    transform: translateY(0) scaleX(0.4);
+  }
+  to {
+    transform: translateY(100vh) scaleX(0.6);
   }
 }

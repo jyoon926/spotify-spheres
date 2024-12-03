@@ -66,7 +66,7 @@ export default function Header() {
       </div>
       {isAuthenticated ? (
         <div className="fixed top-0 right-0 w-full h-full flex flex-col justify-start items-start p-3 z-40 gap-2 pointer-events-none">
-          <div className="sm:hidden w-full flex flex-row justify-between items-center px-4 py-3 bg-lightGlass backdrop-blur-md rounded-lg pointer-events-auto">
+          <div className="sm:hidden w-full flex flex-row justify-between items-center px-4 py-3 bg-lightGlass backdrop-blur-lg rounded-lg pointer-events-auto">
             <div className="flex flex-row gap-5 items-center">
               <Link className="flex flex-row items-center gap-2 text-lg" to="/">
                 <FaSpotify className="text-2xl" />
@@ -79,7 +79,7 @@ export default function Header() {
               <div className="w-8 border-t border-foreground"></div>
             </button>
           </div>
-          <div className="h-full p-2 bg-lightGlass backdrop-blur-md rounded-lg pointer-events-auto hidden sm:flex">
+          <div className="h-full p-2 bg-lightGlass backdrop-blur-lg rounded-lg pointer-events-auto hidden sm:flex">
             <div className="h-full flex flex-col items-start justify-between duration-300 w-10 hover:w-72 overflow-hidden">
               <div>
                 <div className="flex flex-col gap-1">

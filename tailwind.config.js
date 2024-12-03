@@ -6,10 +6,11 @@ export default {
       colors: {
         background: "rgb(var(--background))",
         foreground: "rgb(var(--foreground))",
-        lighter: "rgba(var(--foreground), 0.15)",
         light: "rgba(var(--foreground), 0.25)",
+        lighter: "rgba(var(--foreground), 0.15)",
+        lightest: "rgba(var(--foreground), 0.05)",
         medium: "rgba(var(--foreground), 0.35)",
-        glass: "rgba(var(--background), 0.6)",
+        gray: "rgba(var(--gray), 1)",
         lightGlass: "rgba(var(--gray), 0.6)",
       },
       borderColor: {

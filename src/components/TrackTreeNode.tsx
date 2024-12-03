@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TreeNode } from "../utils/Types";
+import { Track, TreeNode } from "../utils/Types";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useSpotify } from "../utils/useSpotify";
 import { MdOutlineAdd, MdPause, MdPlayArrow, MdRefresh, MdRemove } from "react-icons/md";
@@ -10,7 +10,7 @@ import { useAudioPlayer } from "../utils/AudioPlayerContext";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
-  node: TreeNode<SpotifyApi.TrackObjectFull>;
+  node: TreeNode<Track>;
   depth?: number;
   angle?: number;
   angleSpan?: number;
@@ -134,8 +134,8 @@ export default function TrackTreeNode({
         <div className="flex flex-col gap-3">
           <img
             className="w-36 h-36 bg-lighter rounded pointer-events-none"
-            src={node.value.album?.images[0].url}
-            alt={node.value.album?.images[0].url}
+            src={node.value.album.image}
+            alt={node.value.album.name}
           />
           <div className="w-36 flex flex-col">
             <div className="whitespace-nowrap text-ellipsis overflow-hidden leading-[1.25]">{node.value.name}</div>

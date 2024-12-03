@@ -12,6 +12,7 @@ import Create from "./pages/Create";
 import Help from "./pages/Help";
 import Playlists from "./pages/Playlists";
 import PlaylistCreator from "./pages/PlaylistCreator";
+import Arcs from "./components/Arcs";
 
 function App() {
   const { loading } = useAuth();
@@ -41,6 +42,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/callback" element={<Callback />} />
       </Routes>
+      <Arcs />
     </>
   );
 }

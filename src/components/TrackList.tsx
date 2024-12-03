@@ -3,18 +3,24 @@ import { useTrackTree } from "../utils/TrackTreeContext";
 import { useSpotify } from "../utils/useSpotify";
 import SpotifyWebApi from "spotify-web-api-js";
 import { MdArrowDropDown } from "react-icons/md";
+import { updateSphereDescription, updateSphereTitle } from "../utils/FirestoreService";
+import { useAuth } from "../utils/AuthContext";
+import { Track } from "../utils/Types";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
 }
 
 export default function TrackList({ spotifyApi }: Props) {
+  const { user } = useAuth();
   const { sphere, rootNode, getTrackList } = useTrackTree();
-  const [trackList, setTrackList] = useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [trackList, setTrackList] = useState<Track[]>([]);
   const { createPlaylist } = useSpotify(spotifyApi);
   const [collapsed, setCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
+  const [title, setTitle] = useState(sphere?.title || "");
+  const [description, setDescription] = useState(sphere?.description || "");
 
   useEffect(() => {
     if (!rootNode) return;
@@ -28,6 +34,11 @@ export default function TrackList({ spotifyApi }: Props) {
     }
   }, [trackList]);
 
+  useEffect(() => {
+    setTitle(sphere?.title || "");
+    setDescription(sphere?.description || "");
+  }, [sphere]);
+
   const handleCreatePlaylist = async () => {
     const playlist = await createPlaylist();
     window.open(playlist?.external_urls.spotify, "_blank", "noreferrer");
@@ -37,18 +48,41 @@ export default function TrackList({ spotifyApi }: Props) {
     setCollapsed((prev) => !prev);
   };
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    if (user && sphere) {
+      updateSphereTitle(user.id, sphere, e.target.value);
+    }
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
+    if (user && sphere) {
+      updateSphereDescription(user.id, sphere, e.target.value);
+    }
+  };
+
   return (
     <div className="absolute top-16 sm:top-0 left-0 p-3 sm:pl-20 w-full pointer-events-none">
-      <div className="w-full sm:w-96 p-4 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg pointer-events-auto">
-        <div className="text-xl mb-2">{sphere?.title}</div>
-        <div className="opacity-60">{sphere?.description}</div>
+      <div className="w-full sm:w-96 p-3 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg pointer-events-auto">
+        <input
+          className="unstyled text-xl px-2 py-1 rounded bg-transparent duration-300 hover:bg-lightGlass focus:bg-lightGlass"
+          value={title}
+          onChange={handleTitleChange}
+        />
+        <input
+          className="unstyled px-2 py-1 rounded bg-transparent duration-300 hover:bg-lightGlass focus:bg-lightGlass"
+          value={description}
+          onChange={handleDescriptionChange}
+        />
         {trackList.length > 0 && (
           <>
             <div className="flex flex-row justify-between items-center gap-3 mt-4">
               <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
                 <MdArrowDropDown
-                  className={`text-2xl transform transition-transform duration-300 ${collapsed ? "-rotate-90" : "rotate-0"
-                    }`}
+                  className={`text-2xl transform transition-transform duration-300 ${
+                    collapsed ? "-rotate-90" : "rotate-0"
+                  }`}
                 />
                 <div className="font-bold leading-[0]">Track List ({trackList.length})</div>
               </button>
@@ -67,24 +101,24 @@ export default function TrackList({ spotifyApi }: Props) {
             >
               {trackList.map((track, index) => (
                 <div className="flex flex-row justify-start items-center gap-3" key={index}>
-                  <a className="w-12" href={track.album?.external_urls.spotify} target="_blank">
+                  <a className="w-12" href={track.album.url} target="_blank">
                     <img
                       className="w-12 h-12 bg-lighter rounded"
-                      src={track.album?.images[0].url}
-                      alt={track.album?.images[0].url}
+                      src={track.album.image}
+                      alt={track.album.name}
                     />
                   </a>
                   <div className="flex flex-col flex-1 overflow-hidden">
                     <a
                       className="leading-[1.25] whitespace-nowrap text-ellipsis overflow-hidden hover:underline"
-                      href={track.external_urls.spotify}
+                      href={track.url}
                       target="_blank"
                     >
                       {track.name}
                     </a>
                     <a
                       className="leading-[1.25] whitespace-nowrap text-ellipsis overflow-hidden hover:underline opacity-60"
-                      href={track.artists[0].external_urls.spotify}
+                      href={track.artists[0].url}
                       target="_blank"
                     >
                       {track.artists[0].name}

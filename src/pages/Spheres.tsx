@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../utils/AuthContext";
 import { fetchSpheres, fetchSpheresCount } from "../utils/FirestoreService";
 import { Link } from "react-router-dom";
-import { Sphere, TreeNode } from "../utils/Types";
+import { Sphere, Track, TreeNode } from "../utils/Types";
 import { formatDistanceToNow } from "date-fns";
 
 export default function Spheres() {
@@ -17,8 +17,8 @@ export default function Spheres() {
     if (spheresResponse) setSpheres(spheresResponse as Sphere[]);
   };
 
-  const getTrackListFromNode = (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-    const tracks: SpotifyApi.TrackObjectFull[] = [];
+  const getTrackListFromNode = (node: TreeNode<Track>) => {
+    const tracks: Track[] = [];
     let queue = [node];
     while (queue.length > 0) {
       const curr = queue.shift()!;
@@ -41,7 +41,7 @@ export default function Spheres() {
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))" }}>
           {spheres.length === 0 ? (
             [...Array(spheresCount)].map((_, index) => (
-              <div className="h-[166px] bg-lightGlass rounded-lg placeholder p-5 flex flex-col gap-4" key={index}>
+              <div className="h-[166px] bg-lightGlass rounded-lg placeholder p-5 flex flex-col gap-4 backdrop-blur-lg" key={index}>
                 <div className="w-full h-6 bg-lightGlass rounded" />
                 <div className="w-full border-t" />
                 <div className="w-full h-5 bg-lightGlass rounded" />
@@ -59,7 +59,7 @@ export default function Spheres() {
             <>
               {spheres.map((sphere) => (
                 <Link
-                  className="bg-lightGlass hover:bg-lighter duration-300 p-5 flex flex-col gap-4 rounded-lg"
+                  className="bg-lightGlass hover:bg-lighter duration-300 p-5 flex flex-col gap-4 rounded-lg backdrop-blur-lg"
                   to={`/sphere/${sphere.id}`}
                   key={sphere.id}
                 >
@@ -73,7 +73,7 @@ export default function Spheres() {
                   </div>
                   <div className="flex flex-row items-center overflow-auto scrollbar-hidden gap-2">
                     {getTrackListFromNode(sphere.rootNode).map((track) => (
-                      <img className="w-12 h-12 rounded" src={track.album.images[0].url} alt="" key={track.id} />
+                      <img className="w-12 h-12 rounded" src={track.album.image} alt="" key={track.id} />
                     ))}
                   </div>
                 </Link>

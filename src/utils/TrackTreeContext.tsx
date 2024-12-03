@@ -1,13 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { Sphere, TrackTreeContextType, TreeNode } from "./Types";
-import { updateSphere } from "./FirestoreService";
+import { Sphere, Track, TrackTreeContextType, TreeNode } from "./Types";
+import { updateSphereRootNode } from "./FirestoreService";
 import { useAuth } from "./AuthContext";
 
 const TrackTreeContext = createContext<TrackTreeContextType | undefined>(undefined);
 
 export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
-  const [rootNode, setRootNode] = useState<TreeNode<SpotifyApi.TrackObjectFull> | null>(null);
+  const [rootNode, setRootNode] = useState<TreeNode<Track> | null>(null);
   const { user } = useAuth();
   const [sphere, setSphere] = useState<Sphere | null>(null);
 
@@ -15,16 +15,13 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
     return Math.random().toString(36).slice(2);
   }, []);
 
-  const initializeTree = useCallback(
-    (data: Sphere) => {
-      setRootNode(data.rootNode);
-      setSphere(data);
-    },
-    []
-  );
+  const initializeTree = useCallback((data: Sphere) => {
+    setRootNode(data.rootNode);
+    setSphere(data);
+  }, []);
 
   const findNodeById = useCallback(
-    (id: string): TreeNode<SpotifyApi.TrackObjectFull> | undefined => {
+    (id: string): TreeNode<Track> | undefined => {
       if (!rootNode) return undefined;
 
       const queue = [rootNode];
@@ -45,12 +42,12 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateNode = useCallback(
-    (nodeToUpdate: TreeNode<SpotifyApi.TrackObjectFull>) => {
+    (nodeToUpdate: TreeNode<Track>) => {
       if (!rootNode) return;
 
       const updateNodeRecursive = (
-        current: TreeNode<SpotifyApi.TrackObjectFull>
-      ): TreeNode<SpotifyApi.TrackObjectFull> => {
+        current: TreeNode<Track>
+      ): TreeNode<Track> => {
         if (current.id === nodeToUpdate.id) {
           return nodeToUpdate;
         }
@@ -65,9 +62,9 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addChildrenToNode = useCallback(
-    (parentNode: TreeNode<SpotifyApi.TrackObjectFull>, newChildren: SpotifyApi.TrackObjectFull[]) => {
+    (parentNode: TreeNode<Track>, newChildren: Track[]) => {
       const parent = findNodeById(parentNode.id)!;
-      const childNodes: TreeNode<SpotifyApi.TrackObjectFull>[] = newChildren.map((track) => ({
+      const childNodes: TreeNode<Track>[] = newChildren.map((track) => ({
         id: generateId(),
         value: track,
         children: [],
@@ -75,7 +72,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
         selected: false,
       }));
 
-      const updatedParentNode: TreeNode<SpotifyApi.TrackObjectFull> = {
+      const updatedParentNode: TreeNode<Track> = {
         ...parent,
         children: [...parent.children, ...childNodes],
         selected: true,
@@ -88,7 +85,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
   const getTrackList = useCallback(() => {
     if (!rootNode) return [];
-    const tracks: SpotifyApi.TrackObjectFull[] = [];
+    const tracks: Track[] = [];
     let queue = [rootNode];
     while (queue.length > 0) {
       const curr = queue.shift()!;
@@ -102,7 +99,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
   const getTracks = useCallback(() => {
     if (!rootNode) return [];
-    const tracks: SpotifyApi.TrackObjectFull[] = [];
+    const tracks: Track[] = [];
     let queue = [rootNode];
     while (queue.length > 0) {
       const curr = queue.shift()!;
@@ -113,7 +110,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   }, [rootNode]);
 
   const selectNode = useCallback(
-    (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
+    (node: TreeNode<Track>) => {
       const currentNode = findNodeById(node.id)!;
       updateNode({ ...currentNode, selected: true });
     },
@@ -121,7 +118,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const deselectNode = useCallback(
-    (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
+    (node: TreeNode<Track>) => {
       const currentNode = findNodeById(node.id)!;
       updateNode({ ...currentNode, selected: false });
     },
@@ -129,19 +126,19 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const deleteNode = useCallback(
-    (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
+    (node: TreeNode<Track>) => {
       if (!rootNode) return;
       const currentNode = findNodeById(node.id)!;
       if (currentNode.parent) {
         const parent = findNodeById(currentNode.parent.id)!;
         const children = [...parent.children.filter((child) => child.id !== node.id), ...currentNode.children];
-        const updatedParent: TreeNode<SpotifyApi.TrackObjectFull> = {
+        const updatedParent: TreeNode<Track> = {
           ...currentNode.parent,
           children,
         };
         updateNode(updatedParent);
       } else if (currentNode.children.length > 0) {
-        const newRoot: TreeNode<SpotifyApi.TrackObjectFull> = {
+        const newRoot: TreeNode<Track> = {
           ...currentNode.children[0],
           id: generateId(),
           children: [...currentNode.children[0].children, ...currentNode.children.slice(1)],
@@ -156,7 +153,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    if (user && sphere && rootNode) updateSphere(user!.id, sphere!, rootNode!);
+    if (user && sphere && rootNode) updateSphereRootNode(user.id, sphere, rootNode);
   }, [rootNode]);
 
   return (

@@ -1,16 +1,16 @@
 import { useCallback } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useTrackTree } from "./TrackTreeContext";
-import { TreeNode } from "./Types";
+import { convertTrack, Track, TreeNode } from "./Types";
 import { useAuth } from "./AuthContext";
 
 export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
   const { user } = useAuth();
   const { addChildrenToNode, updateNode, getTrackList, getTracks } = useTrackTree();
 
-  const getSeedTracks = useCallback((node: TreeNode<SpotifyApi.TrackObjectFull>) => {
-    const seedTracks: SpotifyApi.TrackObjectFull[] = [];
-    let curr: TreeNode<SpotifyApi.TrackObjectFull> | null = node;
+  const getSeedTracks = useCallback((node: TreeNode<Track>) => {
+    const seedTracks: Track[] = [];
+    let curr: TreeNode<Track> | null = node;
     while (curr && seedTracks.length < 5) {
       seedTracks.push(curr.value);
       curr = curr.parent;
@@ -19,7 +19,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
   }, []);
 
   const generateRecommendations = useCallback(
-    async (node: TreeNode<SpotifyApi.TrackObjectFull>, limit: number) => {
+    async (node: TreeNode<Track>, limit: number) => {
       try {
         const seedTracks = getSeedTracks(node);
         // const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
@@ -40,7 +40,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
         //   time_signature: calculateAverage("time_signature"),
         //   valence: calculateAverage("valence"),
         // };
-        const uniqueTracks: SpotifyApi.TrackObjectFull[] = [];
+        const uniqueTracks: Track[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));
         const maxAttempts = 2;
         const batchSize = 10;
@@ -58,9 +58,10 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
             // }),
           });
 
-          for (const track of response.tracks) {
+          const tracks = response.tracks as SpotifyApi.TrackObjectFull[];
+          for (let track of tracks) {
             if (!seenTrackNames.has(track.name) && track.preview_url) {
-              uniqueTracks.push(track as SpotifyApi.TrackObjectFull);
+              uniqueTracks.push(convertTrack(track));
               seenTrackNames.add(track.name);
               if (uniqueTracks.length >= limit) break;
             }
@@ -77,10 +78,10 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
   );
 
   const getRecommendations = useCallback(
-    async (node: TreeNode<SpotifyApi.TrackObjectFull>, limit: number) => {
+    async (node: TreeNode<Track>, limit: number) => {
       try {
         const tracks = await generateRecommendations(node, limit);
-        addChildrenToNode(node, tracks as SpotifyApi.TrackObjectFull[]);
+        addChildrenToNode(node, tracks);
       } catch (error) {
         console.error("Error fetching recommendations:", error);
       }
@@ -89,12 +90,12 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
   );
 
   const reload = useCallback(
-    async (node: TreeNode<SpotifyApi.TrackObjectFull>) => {
+    async (node: TreeNode<Track>) => {
       try {
         const tracks = await generateRecommendations(node, 1);
-        const newNode: TreeNode<SpotifyApi.TrackObjectFull> = {
+        const newNode: TreeNode<Track> = {
           ...node,
-          value: tracks[0] as SpotifyApi.TrackObjectFull,
+          value: tracks[0],
           children: [],
         };
         updateNode(newNode);

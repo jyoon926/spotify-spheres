@@ -21,7 +21,7 @@ export default function TrackTreeWrapper({ sphere, spotifyApi }: Props) {
 
   return (
     <div>
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-background">
         <TransformWrapper initialScale={1} minScale={0.3} maxScale={2} centerOnInit={true}>
           {({ centerView }) => (
             <Fragment>

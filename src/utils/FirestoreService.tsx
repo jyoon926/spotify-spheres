@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, getCountFromServer, getDoc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "./FirebaseConfig";
-import { Sphere, TreeNode } from "./Types";
+import { Sphere, Track, TreeNode } from "./Types";
 
 export const fetchUser = async (userId: string) => {
   try {
@@ -52,7 +52,7 @@ export const fetchSpheresCount = async (userId: string) => {
   }
 }
 
-export const createSphere = async (userId: string, rootNode: TreeNode<SpotifyApi.TrackObjectFull>) => {
+export const createSphere = async (userId: string, rootNode: TreeNode<Track>) => {
   try {
     const data = {
       title: "New Sphere",
@@ -61,6 +61,7 @@ export const createSphere = async (userId: string, rootNode: TreeNode<SpotifyApi
       createdAt: serverTimestamp(),
       lastEditedAt: serverTimestamp(),
     }
+    console.log(data);
     const docRef = await addDoc(collection(db, "users", userId, "spheres"), data);
     return docRef;
   } catch (error) {
@@ -68,16 +69,29 @@ export const createSphere = async (userId: string, rootNode: TreeNode<SpotifyApi
   }
 }
 
-export const updateSphere = async (userId: string, sphere: Sphere, rootNode: TreeNode<SpotifyApi.TrackObjectFull>) => {
+export const updateSphereRootNode = async (userId: string, sphere: Sphere, rootNode: TreeNode<Track>) => {
   try {
     const docRef = doc(db, "users", userId, "spheres", sphere.id);
-    const updatedSphere = {
-      ...sphere,
-      rootNode,
-      lastEditedAt: serverTimestamp()
-    }
-    await updateDoc(docRef, updatedSphere);
+    await updateDoc(docRef, { rootNode, lastEditedAt: serverTimestamp() });
   } catch (error) {
-    console.error("Error adding document: ", error);
+    console.error("Error editing document: ", error);
+  }
+}
+
+export const updateSphereTitle = async (userId: string, sphere: Sphere, title: string) => {
+  try {
+    const docRef = doc(db, "users", userId, "spheres", sphere.id);
+    await updateDoc(docRef, { title, lastEditedAt: serverTimestamp() });
+  } catch (error) {
+    console.error("Error editing document: ", error);
+  }
+}
+
+export const updateSphereDescription = async (userId: string, sphere: Sphere, description: string) => {
+  try {
+    const docRef = doc(db, "users", userId, "spheres", sphere.id);
+    await updateDoc(docRef, { description, lastEditedAt: serverTimestamp() });
+  } catch (error) {
+    console.error("Error editing document: ", error);
   }
 }
