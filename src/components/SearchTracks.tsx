@@ -111,7 +111,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
           <div className="flex flex-col w-full">
             {results.map((result) => (
               <button
-                className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg p-2 hover:bg-lightGlass overflow-hidden"
+                className="flex flex-row w-full justify-start items-center gap-3 duration-300 rounded-lg p-2 hover:bg-glass overflow-hidden"
                 key={result.id}
                 onClick={() => onSelected(convertTrack(result))}
               >
@@ -136,7 +136,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
 
       {/* Suggestions */}
       {/* {(loadingSuggestions || suggestions.length > 0) && (
-        <div className="flex w-full flex-col gap-3 bg-lightGlass rounded-lg p-3">
+        <div className="flex w-full flex-col gap-3 bg-glass rounded-lg p-3">
           <div className="opacity-50 pt-1">Suggested tracks</div>
           {loadingSuggestions && (
             <div className="w-full flex justify-center items-center h-32">
@@ -147,7 +147,7 @@ export default function SearchTracks({ spotifyApi, onSelected }: Props) {
             <div className="w-full grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))" }}>
               {suggestions.map((track) => (
                 <button
-                  className="flex flex-col justify-start items-start gap-3 duration-300 rounded-lg p-3 hover:bg-lightGlass"
+                  className="flex flex-col justify-start items-start gap-3 duration-300 rounded-lg p-3 hover:bg-glass"
                   key={track.id}
                   onClick={() => onSelected(track)}
                 >

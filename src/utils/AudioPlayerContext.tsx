@@ -54,7 +54,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       <div
         className={`fixed w-full sm:w-auto right-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}
       >
-        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-lightGlass rounded-lg backdrop-blur-lg">
+        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-glass rounded-lg backdrop-blur-lg">
           <div className="flex flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
               <a href={currentTrack.album.url} target="_blank">

@@ -41,17 +41,17 @@ export default function Spheres() {
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))" }}>
           {spheres.length === 0 ? (
             [...Array(spheresCount)].map((_, index) => (
-              <div className="h-[166px] bg-lightGlass rounded-lg placeholder p-5 flex flex-col gap-4 backdrop-blur-lg" key={index}>
-                <div className="w-full h-6 bg-lightGlass rounded" />
+              <div className="h-[166px] bg-glass rounded-lg placeholder p-5 flex flex-col gap-4 backdrop-blur-lg" key={index}>
+                <div className="w-full h-6 bg-glass rounded" />
                 <div className="w-full border-t" />
-                <div className="w-full h-5 bg-lightGlass rounded" />
-                <div className="w-full h-5 bg-lightGlass rounded" />
+                <div className="w-full h-5 bg-glass rounded" />
+                <div className="w-full h-5 bg-glass rounded" />
                 <div className="flex flex-row items-center overflow-auto scrollbar-hidden gap-2">
-                  <div className="w-12 h-12 rounded bg-lightGlass" />
-                  <div className="w-12 h-12 rounded bg-lightGlass" />
-                  <div className="w-12 h-12 rounded bg-lightGlass" />
-                  <div className="w-12 h-12 rounded bg-lightGlass" />
-                  <div className="w-12 h-12 rounded bg-lightGlass" />
+                  <div className="w-12 h-12 rounded bg-glass" />
+                  <div className="w-12 h-12 rounded bg-glass" />
+                  <div className="w-12 h-12 rounded bg-glass" />
+                  <div className="w-12 h-12 rounded bg-glass" />
+                  <div className="w-12 h-12 rounded bg-glass" />
                 </div>
               </div>
             ))
@@ -59,7 +59,7 @@ export default function Spheres() {
             <>
               {spheres.map((sphere) => (
                 <Link
-                  className="bg-lightGlass hover:bg-lighter duration-300 p-5 flex flex-col gap-4 rounded-lg backdrop-blur-lg"
+                  className="bg-glass hover:bg-lighter duration-300 p-5 flex flex-col gap-4 rounded-lg backdrop-blur-lg"
                   to={`/sphere/${sphere.id}`}
                   key={sphere.id}
                 >

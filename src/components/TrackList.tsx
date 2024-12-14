@@ -64,14 +64,14 @@ export default function TrackList({ spotifyApi }: Props) {
 
   return (
     <div className="absolute top-16 sm:top-0 left-0 p-3 sm:pl-20 w-full pointer-events-none">
-      <div className="w-full sm:w-96 p-3 flex flex-col bg-lightGlass rounded-lg backdrop-blur-lg pointer-events-auto">
+      <div className="w-full sm:w-96 p-3 flex flex-col bg-glass rounded-lg backdrop-blur-lg pointer-events-auto">
         <input
-          className="unstyled text-xl px-2 py-1 rounded bg-transparent duration-300 hover:bg-lightGlass focus:bg-lightGlass"
+          className="unstyled text-xl px-2 py-1 rounded bg-transparent duration-300 hover:bg-glass focus:bg-glass"
           value={title}
           onChange={handleTitleChange}
         />
         <input
-          className="unstyled px-2 py-1 rounded bg-transparent duration-300 hover:bg-lightGlass focus:bg-lightGlass"
+          className="unstyled px-2 py-1 rounded bg-transparent duration-300 hover:bg-glass focus:bg-glass"
           value={description}
           onChange={handleDescriptionChange}
         />

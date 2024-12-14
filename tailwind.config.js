@@ -11,7 +11,7 @@ export default {
         lightest: "rgba(var(--foreground), 0.05)",
         medium: "rgba(var(--foreground), 0.35)",
         gray: "rgba(var(--gray), 1)",
-        lightGlass: "rgba(var(--gray), 0.6)",
+        glass: "rgba(var(--gray), 0.6)",
       },
       borderColor: {
         DEFAULT: "rgba(var(--foreground), 0.15)",

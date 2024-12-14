@@ -40,7 +40,7 @@ const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ children }) => {
         <FaEllipsis className="text-xl" />
       </button>
       <div
-        className={`absolute right-0 w-48 rounded bg-lightGlass backdrop-blur shadow-md z-10 p-3 duration-300 ${
+        className={`absolute right-0 w-48 rounded bg-glass backdrop-blur shadow-md z-10 p-3 duration-300 ${
           !isOpen && "pointer-events-none opacity-0"
         }`}
       >
