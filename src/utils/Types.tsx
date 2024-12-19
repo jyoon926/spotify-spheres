@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Track {
   readonly id: string;
   readonly album: Album;
@@ -36,8 +38,8 @@ export interface Sphere {
   readonly description: string;
   readonly playlistId?: string;
   readonly playlistUrl?: string;
-  readonly createdAt: Date;
-  readonly lastEditedAt: Date;
+  readonly createdAt: Timestamp;
+  readonly lastEditedAt: Timestamp;
   readonly rootNode: TreeNode<Track>;
 }
 
