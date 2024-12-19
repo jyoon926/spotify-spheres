@@ -2,17 +2,20 @@ import { addDoc, collection, doc, getCountFromServer, getDoc, getDocs, serverTim
 import { db } from "./FirebaseConfig";
 import { Sphere, Track, TreeNode } from "./Types";
 
+export class FirestoreError extends Error {
+  constructor(message: string, public readonly code: string) {
+    super(message);
+    this.name = 'FirestoreError';
+  }
+}
+
 export const fetchUser = async (userId: string) => {
   try {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() };
-    } else {
-      return null;
-    }
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error fetching document: ", error);
+    throw new FirestoreError("Failed to fetch user", "fetch-user-error");
   }
 };
 
@@ -20,26 +23,21 @@ export const fetchSphere = async (userId: string, sphereId: string) => {
   try {
     const docRef = doc(db, "users", userId, "spheres", sphereId);
     const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() };
-    } else {
-      return null;
-    }
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   } catch (error) {
-    console.error("Error fetching document: ", error);
+    throw new FirestoreError("Failed to fetch sphere", "fetch-sphere-error");
   }
 };
 
 export const fetchSpheres = async (userId: string) => {
   try {
     const querySnapshot = await getDocs(collection(db, "users", userId, "spheres"));
-    const data = querySnapshot.docs.map(doc => ({
+    return querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
     }));
-    return data;
   } catch (error) {
-    console.error("Error fetching documents: ", error);
+    throw new FirestoreError("Failed to fetch spheres", "fetch-spheres-error");
   }
 };
 
@@ -48,9 +46,9 @@ export const fetchSpheresCount = async (userId: string) => {
     const snapshot = await getCountFromServer(collection(db, "users", userId, "spheres"));
     return snapshot.data().count;
   } catch (error) {
-    console.error('Error getting document count:', error);
+    throw new FirestoreError("Failed to get spheres count", "fetch-count-error");
   }
-}
+};
 
 export const createSphere = async (userId: string, rootNode: TreeNode<Track>) => {
   try {
@@ -60,38 +58,18 @@ export const createSphere = async (userId: string, rootNode: TreeNode<Track>) =>
       rootNode,
       createdAt: serverTimestamp(),
       lastEditedAt: serverTimestamp(),
-    }
-    console.log(data);
-    const docRef = await addDoc(collection(db, "users", userId, "spheres"), data);
-    return docRef;
+    };
+    return await addDoc(collection(db, "users", userId, "spheres"), data);
   } catch (error) {
-    console.error("Error adding document: ", error);
+    throw new FirestoreError("Failed to create sphere", "create-sphere-error");
   }
-}
+};
 
-export const updateSphereRootNode = async (userId: string, sphere: Sphere, rootNode: TreeNode<Track>) => {
+export const updateSphere = async (userId: string, sphere: Sphere, updates: Partial<Sphere>) => {
   try {
     const docRef = doc(db, "users", userId, "spheres", sphere.id);
-    await updateDoc(docRef, { rootNode, lastEditedAt: serverTimestamp() });
+    await updateDoc(docRef, { ...updates, lastEditedAt: serverTimestamp() });
   } catch (error) {
-    console.error("Error editing document: ", error);
+    throw new FirestoreError("Failed to update sphere", "update-sphere-error");
   }
-}
-
-export const updateSphereTitle = async (userId: string, sphere: Sphere, title: string) => {
-  try {
-    const docRef = doc(db, "users", userId, "spheres", sphere.id);
-    await updateDoc(docRef, { title, lastEditedAt: serverTimestamp() });
-  } catch (error) {
-    console.error("Error editing document: ", error);
-  }
-}
-
-export const updateSphereDescription = async (userId: string, sphere: Sphere, description: string) => {
-  try {
-    const docRef = doc(db, "users", userId, "spheres", sphere.id);
-    await updateDoc(docRef, { description, lastEditedAt: serverTimestamp() });
-  } catch (error) {
-    console.error("Error editing document: ", error);
-  }
-}
+};

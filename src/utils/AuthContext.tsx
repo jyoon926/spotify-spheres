@@ -1,79 +1,92 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { RoutesProps } from "react-router-dom";
 import SpotifyWebApi from "spotify-web-api-js";
 
-interface AuthContextType {
-  token: string | null;
+interface AuthState {
   user: SpotifyApi.UserObjectPrivate | null;
-  loading: boolean;
+  token: string | null;
   isAuthenticated: boolean;
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs | null;
+}
+
+interface AuthContextType extends AuthState {
+  loading: boolean;
   login: () => void;
   logout: () => void;
 }
 
+const INITIAL_STATE: AuthState = {
+  user: null,
+  token: localStorage.getItem("access_token"),
+  isAuthenticated: false,
+  spotifyApi: null,
+};
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: RoutesProps) => {
-  const [user, setUser] = useState<SpotifyApi.UserObjectPrivate | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem("access_token") || null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [state, setState] = useState<AuthState>(INITIAL_STATE);
   const [loading, setLoading] = useState(true);
-  const [spotifyApi, setSpotifyApi] = useState<SpotifyWebApi.SpotifyWebApiJs | null>(null);
+
+  const updateState = useCallback((updates: Partial<AuthState>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const initializeSpotifyApi = useCallback((accessToken: string) => {
+    const spotify = new SpotifyWebApi();
+    spotify.setAccessToken(accessToken);
+    return spotify;
+  }, []);
+
+  const fetchUser = useCallback(async (accessToken: string) => {
+    try {
+      const spotify = state.spotifyApi || initializeSpotifyApi(accessToken);
+      const user = await spotify.getMe();
+      updateState({ user, spotifyApi: spotify, isAuthenticated: true });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  }, [state.spotifyApi, initializeSpotifyApi, updateState]);
 
   useEffect(() => {
-    const fetchUser = async (accessToken: string) => {
-      let spotify = spotifyApi;
-      if (!spotify) {
-        spotify = new SpotifyWebApi();
-        spotify.setAccessToken(accessToken);
-        setSpotifyApi(spotify);
-      }
-      try {
-        const response = await spotify.getMe();
-        setUser(response);
-        setLoading(false);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Error fetching user data", error);
-        logout();
-      }
-    };
-
     const urlParams = new URLSearchParams(window.location.search);
     const accessToken = urlParams.get("access_token");
 
     if (accessToken) {
-      setToken(accessToken);
       localStorage.setItem("access_token", accessToken);
+      updateState({ token: accessToken });
       fetchUser(accessToken);
       window.history.replaceState({}, document.title, "/");
-    } else if (token) {
-      fetchUser(token);
+    } else if (state.token) {
+      fetchUser(state.token);
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, [state.token, fetchUser, updateState]);
 
-  const login = () => {
+  const login = useCallback(() => {
     const clientId = import.meta.env.VITE_REACT_APP_SPOTIFY_CLIENT_ID;
     const baseUrl = window.location.origin;
     const scope = "playlist-modify-public playlist-modify-private";
     const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/callback`;
     window.location.href = authUrl;
-  };
+  }, []);
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    setSpotifyApi(null);
-    setIsAuthenticated(false);
+  const logout = useCallback(() => {
     localStorage.removeItem("access_token");
-  };
+    updateState({ token: null, user: null, spotifyApi: null, isAuthenticated: false });
+  }, [updateState]);
+
+  const contextValue = useMemo(() => (
+    { ...state, loading, login, logout }
+  ), [state, loading, login, logout]);
 
   return (
-    <AuthContext.Provider value={{ token, user, isAuthenticated, loading, login, logout, spotifyApi }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

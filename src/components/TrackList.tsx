@@ -1,66 +1,107 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTrackTree } from "../utils/TrackTreeContext";
 import { useSpotify } from "../utils/useSpotify";
 import SpotifyWebApi from "spotify-web-api-js";
-import { MdArrowDropDown } from "react-icons/md";
-import { updateSphereDescription, updateSphereTitle } from "../utils/FirestoreService";
+import { MdArrowDropDown, MdOutlineOpenInNew } from "react-icons/md";
+import { updateSphere } from "../utils/FirestoreService";
 import { useAuth } from "../utils/AuthContext";
 import { Track } from "../utils/Types";
+import { Link } from "react-router-dom";
 
 interface Props {
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
 }
 
+const MAX_HEIGHT = 288;
+const DEBOUNCE_DELAY = 500;
+
 export default function TrackList({ spotifyApi }: Props) {
   const { user } = useAuth();
-  const { sphere, rootNode, getTrackList } = useTrackTree();
+  const { sphere, rootNode, getTrackList, setSphere } = useTrackTree();
   const [trackList, setTrackList] = useState<Track[]>([]);
-  const { createPlaylist } = useSpotify(spotifyApi);
+  const { createPlaylist, updatePlaylist } = useSpotify(spotifyApi);
   const [collapsed, setCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
   const [title, setTitle] = useState(sphere?.title || "");
   const [description, setDescription] = useState(sphere?.description || "");
+  const updateTimeoutRef = useRef<NodeJS.Timeout>();
 
+  // Update track list when root node changes
   useEffect(() => {
     if (!rootNode) return;
-    setTrackList(getTrackList());
+    setTrackList([...getTrackList()]);
   }, [getTrackList, rootNode]);
 
+  // Update content height when track list changes
   useEffect(() => {
     if (contentRef.current) {
       const height = contentRef.current.scrollHeight;
-      setContentHeight(Math.min(height, 288));
+      setContentHeight(Math.min(height, MAX_HEIGHT));
     }
   }, [trackList]);
 
+  // Update title and description when sphere changes
   useEffect(() => {
     setTitle(sphere?.title || "");
     setDescription(sphere?.description || "");
   }, [sphere]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current)
+        clearTimeout(updateTimeoutRef.current);
+    };
+  }, []);
+
   const handleCreatePlaylist = async () => {
-    const playlist = await createPlaylist();
-    window.open(playlist?.external_urls.spotify, "_blank", "noreferrer");
+    if (!user || !sphere) return;
+    try {
+      const playlist = await createPlaylist(sphere);
+      updateSphere(user.id, sphere, { playlistId: playlist.id, playlistUrl: playlist.external_urls.spotify });
+      setSphere({ ...sphere, playlistId: playlist.id, playlistUrl: playlist.external_urls.spotify });
+      window.open(playlist?.external_urls.spotify, "_blank", "noreferrer");
+    } catch (error) {
+      console.error("Failed to create playlist:", error);
+    }
+  };
+
+  const handleUpdatePlaylist = async () => {
+    if (!user || !sphere) return;
+    try {
+      await updatePlaylist(sphere);
+      window.open(sphere.playlistUrl, "_blank", "noreferrer");
+    } catch (error) {
+      console.error("Failed to update playlist:", error);
+    }
   };
 
   const handleCollapse = () => {
-    setCollapsed((prev) => !prev);
+    setCollapsed(prev => !prev);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-    if (user && sphere) {
-      updateSphereTitle(user.id, sphere, e.target.value);
+  const debouncedUpdate = useCallback((field: string, value: string) => {
+    if (!user || !sphere) return;
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current);
     }
-  };
+    updateTimeoutRef.current = setTimeout(() => {
+      updateSphere(user.id, sphere, { [field]: value });
+    }, DEBOUNCE_DELAY);
+  }, [user, sphere]);
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.target.value);
-    if (user && sphere) {
-      updateSphereDescription(user.id, sphere, e.target.value);
-    }
-  };
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    debouncedUpdate('title', newTitle);
+  }, [debouncedUpdate]);
+
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDescription = e.target.value;
+    setDescription(newDescription);
+    debouncedUpdate('description', newDescription);
+  }, [debouncedUpdate]);
 
   return (
     <div className="absolute top-16 sm:top-0 left-0 p-3 sm:pl-20 w-full pointer-events-none">
@@ -80,15 +121,23 @@ export default function TrackList({ spotifyApi }: Props) {
             <div className="flex flex-row justify-between items-center gap-3 mt-2">
               <button className="flex flex-row items-center flex-1" onClick={handleCollapse}>
                 <MdArrowDropDown
-                  className={`text-2xl transform transition-transform duration-300 ${
-                    collapsed ? "-rotate-90" : "rotate-0"
-                  }`}
+                  className={`text-2xl transform transition-transform duration-300 ${collapsed ? "-rotate-90" : "rotate-0"
+                    }`}
                 />
                 <div className="font-bold leading-[0]">Track List ({trackList.length})</div>
               </button>
-              <button className="button light sm" onClick={handleCreatePlaylist}>
-                Create playlist
-              </button>
+              {sphere?.playlistId ? (
+                <button className="button light sm" onClick={handleUpdatePlaylist}>
+                  Update playlist
+                </button>
+              ) : (
+                <button className="button light sm" onClick={handleCreatePlaylist}>
+                  Create playlist
+                </button>
+              )}
+              {sphere?.playlistUrl && (
+                <Link className="text-xl" to={sphere.playlistUrl}><MdOutlineOpenInNew /></Link>
+              )}
             </div>
             <div
               ref={contentRef}

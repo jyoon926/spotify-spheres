@@ -1,8 +1,15 @@
 import { useCallback } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useTrackTree } from "./TrackTreeContext";
-import { convertTrack, Track, TreeNode } from "./Types";
+import { convertTrack, Sphere, Track, TreeNode } from "./Types";
 import { useAuth } from "./AuthContext";
+
+export class SpotifyError extends Error {
+  constructor(message: string, public readonly code: string) {
+    super(message);
+    this.name = 'SpotifyError';
+  }
+}
 
 export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
   const { user } = useAuth();
@@ -10,36 +17,18 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
 
   const getSeedTracks = useCallback((node: TreeNode<Track>) => {
     const seedTracks: Track[] = [];
-    let curr: TreeNode<Track> | null = node;
-    while (curr && seedTracks.length < 5) {
-      seedTracks.push(curr.value);
-      curr = curr.parent;
+    let current: TreeNode<Track> | null = node;
+    while (current && seedTracks.length < 5) {
+      seedTracks.push(current.value);
+      current = current.parent;
     }
     return seedTracks;
   }, []);
 
   const generateRecommendations = useCallback(
-    async (node: TreeNode<Track>, limit: number) => {
+    async (node: TreeNode<Track>, limit: number): Promise<Track[]> => {
       try {
         const seedTracks = getSeedTracks(node);
-        // const features = await spotifyApi.getAudioFeaturesForTracks(seedTracks.map((t) => t.id));
-        // const count = features.audio_features.length;
-        // const calculateAverage = (key: string) =>
-        //   features.audio_features.reduce((sum, obj: any) => sum + obj[key], 0) / count;
-        // const averageFeatures = {
-        //   acousticness: calculateAverage("acousticness"),
-        //   danceability: calculateAverage("danceability"),
-        //   energy: calculateAverage("energy"),
-        //   instrumentalness: calculateAverage("instrumentalness"),
-        //   key: calculateAverage("key"),
-        //   liveness: calculateAverage("liveness"),
-        //   loudness: calculateAverage("loudness"),
-        //   mode: calculateAverage("mode"),
-        //   speechiness: calculateAverage("speechiness"),
-        //   tempo: calculateAverage("tempo"),
-        //   time_signature: calculateAverage("time_signature"),
-        //   valence: calculateAverage("valence"),
-        // };
         const uniqueTracks: Track[] = [];
         const seenTrackNames = new Set(getTracks().map((t) => t.name));
         const maxAttempts = 2;
@@ -51,11 +40,7 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
             seed_tracks: seedTracks
               .map((t) => t.id)
               .slice(0, 5)
-              .join(","),
-            // ...(node.parent && {
-            //   target_danceability: averageFeatures.danceability,
-            //   target_energy: averageFeatures.energy,
-            // }),
+              .join(",")
           });
 
           const tracks = response.tracks as SpotifyApi.TrackObjectFull[];
@@ -70,52 +55,78 @@ export const useSpotify = (spotifyApi: SpotifyWebApi.SpotifyWebApiJs) => {
 
         return uniqueTracks.slice(0, limit);
       } catch (error) {
-        console.error("Error in generateRecommendations:", error);
-        return [];
+        throw new SpotifyError(
+          "Failed to generate recommendations",
+          "recommendations-error"
+        );
       }
-    },
-    [getSeedTracks, getTracks, spotifyApi]
+    }, [getSeedTracks, getTracks, spotifyApi]
   );
 
   const getRecommendations = useCallback(
-    async (node: TreeNode<Track>, limit: number) => {
+    async (node: TreeNode<Track>, limit: number): Promise<void> => {
       try {
         const tracks = await generateRecommendations(node, limit);
         addChildrenToNode(node, tracks);
       } catch (error) {
-        console.error("Error fetching recommendations:", error);
+        console.error("Error in getRecommendations:", error);
+        throw error;
       }
-    },
-    [generateRecommendations, addChildrenToNode]
+    }, [generateRecommendations, addChildrenToNode]
   );
 
   const reload = useCallback(
-    async (node: TreeNode<Track>) => {
+    async (node: TreeNode<Track>): Promise<void> => {
       try {
         const tracks = await generateRecommendations(node, 1);
-        const newNode: TreeNode<Track> = {
-          ...node,
-          value: tracks[0],
-          children: [],
-        };
-        updateNode(newNode);
+        if (tracks.length > 0) {
+          const newNode: TreeNode<Track> = {
+            ...node,
+            value: tracks[0],
+            children: [],
+          };
+          updateNode(newNode);
+        }
       } catch (error) {
-        console.error("Error fetching recommendations:", error);
+        console.error("Error in reload:", error);
+        throw error;
       }
-    },
-    [generateRecommendations, updateNode]
+    }, [generateRecommendations, updateNode]
   );
 
-  const createPlaylist = useCallback(async () => {
-    if (!user) return;
-    const trackList = getTrackList();
-    const playlist = await spotifyApi.createPlaylist(user.id, { name: "SPHERE" });
-    await spotifyApi.addTracksToPlaylist(
-      playlist.id,
-      trackList.map((track) => track.uri)
-    );
-    return playlist;
+  const createPlaylist = useCallback(async (sphere: Sphere) => {
+    if (!user) {
+      throw new SpotifyError("User not authenticated", "auth-error");
+    }
+    try {
+      const trackList = getTrackList();
+      const playlist = await spotifyApi.createPlaylist(user.id, { name: sphere.title, description: sphere.description });
+      await spotifyApi.addTracksToPlaylist(
+        playlist.id,
+        trackList.map((track) => track.uri)
+      );
+      return playlist;
+    } catch (error) {
+      throw new SpotifyError("Failed to create playlist", "create-playlist-error");
+    }
   }, [getTrackList, spotifyApi, user]);
 
-  return { getRecommendations, reload, createPlaylist };
+  const updatePlaylist = useCallback(async (sphere: Sphere) => {
+    if (!user)
+      throw new SpotifyError("User not authenticated", "auth-error");
+    if (!sphere.playlistId)
+      throw new SpotifyError("No playlist ID provided", "invalid-playlist-error");
+
+    try {
+      const trackList = getTrackList();
+      await spotifyApi.replaceTracksInPlaylist(sphere.playlistId, trackList.map((track) => track.uri));
+    } catch (error) {
+      throw new SpotifyError(
+        "Failed to update playlist",
+        "update-playlist-error"
+      );
+    }
+  }, [getTrackList, spotifyApi, user]);
+
+  return { getRecommendations, reload, createPlaylist, updatePlaylist };
 };

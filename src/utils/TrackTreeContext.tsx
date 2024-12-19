@@ -1,18 +1,32 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { Sphere, Track, TrackTreeContextType, TreeNode } from "./Types";
-import { updateSphereRootNode } from "./FirestoreService";
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
+import { Sphere, Track, TreeNode } from "./Types";
+import { updateSphere } from "./FirestoreService";
 import { useAuth } from "./AuthContext";
+
+export interface TrackTreeContextType {
+  readonly rootNode: TreeNode<Track> | null;
+  readonly sphere: Sphere | null;
+  readonly updateNode: (nodeToUpdate: TreeNode<Track>) => void;
+  readonly addChildrenToNode: (parentNode: TreeNode<Track>, newChildren: Track[]) => void;
+  readonly initializeTree: (sphere: Sphere) => void;
+  readonly getTrackList: () => readonly Track[];
+  readonly getTracks: () => readonly Track[];
+  readonly selectNode: (node: TreeNode<Track>) => void;
+  readonly deselectNode: (node: TreeNode<Track>) => void;
+  readonly deleteNode: (node: TreeNode<Track>) => void;
+  readonly setSphere: (sphere: Sphere) => void;
+}
 
 const TrackTreeContext = createContext<TrackTreeContextType | undefined>(undefined);
 
 export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   const [rootNode, setRootNode] = useState<TreeNode<Track> | null>(null);
-  const { user } = useAuth();
   const [sphere, setSphere] = useState<Sphere | null>(null);
+  const { user } = useAuth();
 
   const generateId = useCallback((): string => {
-    return Math.random().toString(36).slice(2);
+    return crypto.randomUUID();
   }, []);
 
   const initializeTree = useCallback((data: Sphere) => {
@@ -21,156 +35,177 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const findNodeById = useCallback(
-    (id: string): TreeNode<Track> | undefined => {
-      if (!rootNode) return undefined;
+    (id: string, node: TreeNode<Track> | null): TreeNode<Track> | undefined => {
+      if (!node) return undefined;
+      if (node.id === id) return node;
 
-      const queue = [rootNode];
+      const queue = [node];
       while (queue.length > 0) {
         const current = queue.shift();
         if (!current) continue;
-
         if (current.id === id) {
           return current;
         }
-
         queue.push(...current.children);
       }
 
       return undefined;
     },
-    [rootNode]
+    []
   );
 
-  const updateNode = useCallback(
-    (nodeToUpdate: TreeNode<Track>) => {
-      if (!rootNode) return;
+  const updateNode = useCallback((nodeToUpdate: TreeNode<Track>) => {
+    setRootNode(prevRoot => {
+      if (!prevRoot) return null;
 
-      const updateNodeRecursive = (
-        current: TreeNode<Track>
-      ): TreeNode<Track> => {
+      const updateNodeRecursive = (current: TreeNode<Track>): TreeNode<Track> => {
         if (current.id === nodeToUpdate.id) {
           return nodeToUpdate;
         }
         return {
           ...current,
-          children: current.children.map((child) => updateNodeRecursive(child)),
+          children: current.children.map(updateNodeRecursive),
         };
       };
-      setRootNode(updateNodeRecursive(rootNode));
-    },
-    [rootNode]
-  );
 
-  const addChildrenToNode = useCallback(
-    (parentNode: TreeNode<Track>, newChildren: Track[]) => {
-      const parent = findNodeById(parentNode.id)!;
-      const childNodes: TreeNode<Track>[] = newChildren.map((track) => ({
-        id: generateId(),
-        value: track,
-        children: [],
-        parent,
-        selected: false,
-      }));
+      return updateNodeRecursive(prevRoot);
+    });
+  }, []);
 
-      const updatedParentNode: TreeNode<Track> = {
-        ...parent,
-        children: [...parent.children, ...childNodes],
-        selected: true,
-      };
+  const addChildrenToNode = useCallback((parentNode: TreeNode<Track>, newChildren: Track[]) => {
+    const parent = findNodeById(parentNode.id, rootNode);
+    if (!parent) return;
 
-      updateNode(updatedParentNode);
-    },
-    [generateId, updateNode]
-  );
+    const childNodes: TreeNode<Track>[] = newChildren.map(track => ({
+      id: generateId(),
+      value: track,
+      children: [],
+      parent,
+      selected: false,
+    }));
 
-  const getTrackList = useCallback(() => {
+    const updatedParentNode: TreeNode<Track> = {
+      ...parent,
+      children: [...parent.children, ...childNodes],
+      selected: true,
+    };
+
+    updateNode(updatedParentNode);
+  }, [findNodeById, generateId, rootNode, updateNode]);
+
+  const getTrackList = useCallback((): Track[] => {
     if (!rootNode) return [];
+
     const tracks: Track[] = [];
-    let queue = [rootNode];
-    while (queue.length > 0) {
-      const curr = queue.shift()!;
-      if (curr.selected) {
-        tracks.push(curr.value);
+    const stack = [rootNode];
+
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      if (current.selected) {
+        tracks.push(current.value);
       }
-      queue.push(...curr.children);
+      stack.push(...current.children);
     }
+
     return tracks;
   }, [rootNode]);
 
-  const getTracks = useCallback(() => {
+  const getTracks = useCallback((): Track[] => {
     if (!rootNode) return [];
+
     const tracks: Track[] = [];
-    let queue = [rootNode];
-    while (queue.length > 0) {
-      const curr = queue.shift()!;
-      tracks.push(curr.value);
-      queue.push(...curr.children);
+    const stack = [rootNode];
+
+    while (stack.length > 0) {
+      const current = stack.pop()!;
+      tracks.push(current.value);
+      stack.push(...current.children);
     }
+
     return tracks;
   }, [rootNode]);
 
-  const selectNode = useCallback(
-    (node: TreeNode<Track>) => {
-      const currentNode = findNodeById(node.id)!;
+  const selectNode = useCallback((node: TreeNode<Track>) => {
+    const currentNode = findNodeById(node.id, rootNode);
+    if (currentNode) {
       updateNode({ ...currentNode, selected: true });
-    },
-    [updateNode]
-  );
+    }
+  }, [findNodeById, rootNode, updateNode]);
 
-  const deselectNode = useCallback(
-    (node: TreeNode<Track>) => {
-      const currentNode = findNodeById(node.id)!;
+  const deselectNode = useCallback((node: TreeNode<Track>) => {
+    const currentNode = findNodeById(node.id, rootNode);
+    if (currentNode) {
       updateNode({ ...currentNode, selected: false });
-    },
-    [updateNode]
-  );
+    }
+  }, [findNodeById, rootNode, updateNode]);
 
-  const deleteNode = useCallback(
-    (node: TreeNode<Track>) => {
-      if (!rootNode) return;
-      const currentNode = findNodeById(node.id)!;
-      if (currentNode.parent) {
-        const parent = findNodeById(currentNode.parent.id)!;
-        const children = [...parent.children.filter((child) => child.id !== node.id), ...currentNode.children];
-        const updatedParent: TreeNode<Track> = {
-          ...currentNode.parent,
-          children,
-        };
-        updateNode(updatedParent);
-      } else if (currentNode.children.length > 0) {
-        const newRoot: TreeNode<Track> = {
-          ...currentNode.children[0],
-          id: generateId(),
-          children: [...currentNode.children[0].children, ...currentNode.children.slice(1)],
-          parent: null,
-        };
-        setRootNode(newRoot);
-      } else {
-        setRootNode(null);
-      }
-    },
-    [rootNode, generateId, updateNode]
-  );
+  const deleteNode = useCallback((node: TreeNode<Track>) => {
+    if (!rootNode) return;
+
+    const currentNode = findNodeById(node.id, rootNode);
+    if (!currentNode) return;
+
+    if (currentNode.parent) {
+      const parent = findNodeById(currentNode.parent.id, rootNode);
+      if (!parent) return;
+
+      const children = [
+        ...parent.children.filter(child => child.id !== node.id),
+        ...currentNode.children
+      ];
+
+      const updatedParent: TreeNode<Track> = {
+        ...currentNode.parent,
+        children,
+      };
+      updateNode(updatedParent);
+    } else if (currentNode.children.length > 0) {
+      const newRoot: TreeNode<Track> = {
+        ...currentNode.children[0],
+        id: generateId(),
+        children: [...currentNode.children[0].children, ...currentNode.children.slice(1)],
+        parent: null,
+      };
+      setRootNode(newRoot);
+    } else {
+      setRootNode(null);
+    }
+  }, [rootNode, findNodeById, generateId, updateNode]);
 
   useEffect(() => {
-    if (user && sphere && rootNode) updateSphereRootNode(user.id, sphere, rootNode);
-  }, [rootNode]);
+    if (user && sphere && rootNode) {
+      updateSphere(user.id, sphere, { rootNode }).catch(console.error);
+    }
+  }, [rootNode, sphere, user]);
+
+  const contextValue = useMemo(() => ({
+    rootNode,
+    sphere,
+    updateNode,
+    addChildrenToNode,
+    initializeTree,
+    getTrackList,
+    getTracks,
+    selectNode,
+    deselectNode,
+    deleteNode,
+    setSphere
+  }), [
+    rootNode,
+    sphere,
+    updateNode,
+    addChildrenToNode,
+    initializeTree,
+    getTrackList,
+    getTracks,
+    selectNode,
+    deselectNode,
+    deleteNode,
+    setSphere
+  ]);
 
   return (
-    <TrackTreeContext.Provider
-      value={{
-        rootNode,
-        sphere,
-        updateNode,
-        addChildrenToNode,
-        initializeTree,
-        getTrackList,
-        getTracks,
-        selectNode,
-        deselectNode,
-        deleteNode,
-      }}
-    >
+    <TrackTreeContext.Provider value={contextValue}>
       {children}
     </TrackTreeContext.Provider>
   );
