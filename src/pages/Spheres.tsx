@@ -8,7 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 export default function Spheres() {
   const { user } = useAuth();
   const [spheres, setSpheres] = useState<Sphere[]>([]);
-  const [spheresCount, setSpheresCount] = useState<number>(0);
+  const [spheresCount, setSpheresCount] = useState<number>(1);
 
   const loadSpheres = async () => {
     const countResponse = await fetchSpheresCount(user!.id);

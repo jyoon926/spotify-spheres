@@ -40,17 +40,18 @@ export const AuthProvider = ({ children }: RoutesProps) => {
   }, []);
 
   const fetchUser = useCallback(async (accessToken: string) => {
+    if (state.user) return;
     try {
-      const spotify = state.spotifyApi || initializeSpotifyApi(accessToken);
-      const user = await spotify.getMe();
-      updateState({ user, spotifyApi: spotify, isAuthenticated: true });
+      const spotifyApi = state.spotifyApi || initializeSpotifyApi(accessToken);
+      const user = await spotifyApi.getMe();
+      updateState({ user, spotifyApi, isAuthenticated: true });
     } catch (error) {
       console.error("Error fetching user data:", error);
       logout();
     } finally {
       setLoading(false);
     }
-  }, [state.spotifyApi, initializeSpotifyApi, updateState]);
+  }, [state.spotifyApi]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }: RoutesProps) => {
   const logout = useCallback(() => {
     localStorage.removeItem("access_token");
     updateState({ token: null, user: null, spotifyApi: null, isAuthenticated: false });
-  }, [updateState]);
+  }, []);
 
   const contextValue = useMemo(() => (
     { ...state, loading, login, logout }

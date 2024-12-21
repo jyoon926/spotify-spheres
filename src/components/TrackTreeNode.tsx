@@ -124,9 +124,8 @@ export default function TrackTreeNode({
 
       {/* Node content */}
       <div
-        className={`absolute p-3 flex flex-row justify-start items-start gap-3 select-none bg-glass rounded-lg backdrop-blur-md duration-100 overflow-hidden ${
-          node.selected && "border-2 border-foreground"
-        }`}
+        className={`absolute p-3 flex flex-row justify-start items-start gap-3 select-none bg-glass rounded-lg backdrop-blur-md duration-100 overflow-hidden ${node.selected && "border-2 border-foreground"
+          }`}
         style={{
           transform: `translate(-50%, -50%)`,
         }}
@@ -146,9 +145,8 @@ export default function TrackTreeNode({
         </div>
         <div className="flex flex-col gap-2">
           <button
-            className={`p-1 rounded-full duration-300 bg-lighter ${
-              isPlaying ? "bg-light" : "hover:bg-light"
-            }`}
+            className={`p-1 rounded-full duration-300 bg-lighter ${isPlaying ? "bg-light" : "hover:bg-light"
+              }`}
             onClick={handlePlay}
             onDoubleClick={handleClick}
           >

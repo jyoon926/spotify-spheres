@@ -1,10 +1,14 @@
-import React, { createContext, useContext, useState, useRef } from "react";
-import { MdPause, MdPlayArrow } from "react-icons/md";
+import React, { createContext, useContext, useState, useRef, useEffect } from "react";
+import { MdPause, MdPlayArrow, MdVolumeOff, MdVolumeUp } from "react-icons/md";
 import { Track, TreeNode } from "./Types";
 
 type AudioPlayerContextType = {
   currentTrack: Track | null;
   isPlaying: boolean;
+  isLoading: boolean;
+  progress: number;
+  volume: number;
+  setVolume: (volume: number) => void;
   playAudio: (track: Track) => void;
   pauseAudio: () => void;
   checkSubTree: (node: TreeNode<Track>) => boolean;
@@ -14,20 +18,69 @@ const AudioPlayerContext = createContext<AudioPlayerContextType | undefined>(und
 
 export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const playAudio = (track: Track) => {
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    const audio = audioRef.current;
+
+    const handleError = () => {
+      setIsPlaying(false);
+      setIsLoading(false);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+    };
+
+    const updateProgress = () => {
+      setProgress((audio.currentTime / audio.duration) * 100);
+    };
+
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('timeupdate', updateProgress);
+
+    return () => {
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('timeupdate', updateProgress);
+    };
+  }, [audioRef.current]);
+
+  useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.pause();
+      audioRef.current.volume = volume;
     }
-    setCurrentTrack(track);
-    setTimeout(() => {
+  }, [volume]);
+
+  const playAudio = async (track: Track) => {
+    try {
+      setIsLoading(true);
+
       if (audioRef.current) {
-        audioRef.current.play();
+        audioRef.current.pause();
+      }
+
+      setCurrentTrack(track);
+
+      // Small delay to ensure audio is loaded
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      if (audioRef.current) {
+        await audioRef.current.play();
         setIsPlaying(true);
       }
-    }, 10);
+    } catch (err) {
+      setIsPlaying(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const pauseAudio = () => {
@@ -40,22 +93,17 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const checkSubTree = (node: TreeNode<Track>): boolean => {
     if (node.value === currentTrack) return true;
-    for (const child of node.children) {
-      if (checkSubTree(child)) {
-        return true;
-      }
-    }
-    return false;
+    return node.children.some(checkSubTree);
   };
 
   return (
-    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, playAudio, pauseAudio, checkSubTree }}>
+    <AudioPlayerContext.Provider value={{ currentTrack, isPlaying, isLoading, progress, volume, setVolume, playAudio, pauseAudio, checkSubTree }}>
       {children}
       <div
         className={`fixed w-full sm:w-auto right-0 p-3 duration-300 ${currentTrack ? "bottom-0" : "bottom-[-100px]"}`}
       >
-        <div className="flex min-w-96 flex-row justify-between items-center gap-2 p-3 bg-glass rounded-lg backdrop-blur-lg">
-          <div className="flex flex-row items-center gap-3 overflow-hidden">
+        <div className="flex min-w-[300px] flex-row justify-start items-center gap-3 p-3 bg-glass rounded-lg backdrop-blur-lg">
+          <div className="flex grow flex-row items-center gap-3 overflow-hidden">
             {currentTrack ? (
               <a href={currentTrack.album.url} target="_blank">
                 <img className="w-12 h-12 bg-lighter rounded" src={currentTrack.album.image} />
@@ -80,15 +128,29 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
               </a>
             </div>
           </div>
-          {isPlaying ? (
-            <button className="text-3xl p-1" onClick={() => pauseAudio()}>
-              <MdPause />
+          <div className="flex items-center gap-1 pr-1">
+            {isPlaying ? (
+              <button className="text-2xl p-2" onClick={() => pauseAudio()}>
+                <MdPause />
+              </button>
+            ) : (
+              <button className="text-2xl p-2" onClick={() => playAudio(currentTrack!)}>
+                <MdPlayArrow />
+              </button>
+            )}
+            <button className="text-xl p-2" onClick={() => setVolume(volume === 0 ? 1 : 0)}>
+              {volume === 0 ? <MdVolumeOff /> : <MdVolumeUp />}
             </button>
-          ) : (
-            <button className="text-3xl p-1" onClick={() => playAudio(currentTrack!)}>
-              <MdPlayArrow />
-            </button>
-          )}
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={volume}
+              onChange={(e) => setVolume(Number(e.target.value))}
+              className="unstyled w-24"
+            />
+          </div>
         </div>
         <audio ref={audioRef} src={currentTrack?.preview_url} loop={true} />
       </div>
@@ -103,3 +165,5 @@ export const useAudioPlayer = (): AudioPlayerContextType => {
   }
   return context;
 };
+
+export default AudioPlayerProvider;

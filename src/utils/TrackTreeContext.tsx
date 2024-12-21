@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
 import { Sphere, Track, TreeNode } from "./Types";
 import { updateSphere } from "./FirestoreService";
@@ -213,7 +212,7 @@ export function TrackTreeProvider({ children }: { children: React.ReactNode }) {
 
 export const useTrackTree = () => {
   const context = useContext(TrackTreeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useTrackTree must be used within a TrackTreeProvider");
   }
   return context;

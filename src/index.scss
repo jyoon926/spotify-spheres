@@ -162,7 +162,8 @@ input:not(.unstyled) {
 @keyframes gradient {
   from {
     left: -6rem;
-  } to {
+  }
+  to {
     left: 100%;
   }
 }
@@ -181,4 +182,32 @@ input:not(.unstyled) {
   to {
     transform: translateY(100vh) scaleX(0.6);
   }
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: rgba(var(--foreground), 0.15);
+  outline: none;
+  border-radius: 100vw;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 3px;
+  height: 3px;
+  background: rgb(var(--foreground));
+  border-radius: 100%;
+  box-shadow: -61.5px 0 0 60px rgba(var(--foreground), 1);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04aa6d;
+  cursor: pointer;
 }
